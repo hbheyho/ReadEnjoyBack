@@ -1,0 +1,30 @@
+package com.ReadEnjoyBack.service;
+
+import com.ReadEnjoyBack.common.ServerResponse;
+import com.ReadEnjoyBack.pojo.User;
+
+/**
+ * @Author:HB
+ * @Description:
+ * @Createdata:Created in  15:43  2018/5/17.
+ */
+public interface IUserService {
+   /*用户登录*/
+    ServerResponse<User> login(String username, String password);
+    /*用户注册*/
+    ServerResponse<String> register(User user);
+    /*用户名和email的实时检验*/
+    ServerResponse<String> checkValid(String str,String type);
+    /*得到用户的密保问题*/
+    ServerResponse<String> getQuestionByUsername(String username);
+    /*根据密保问题获取密保答案*/
+    ServerResponse<String> checkAnswerByQuestion(String username,String question,String answer);
+    /*根据用户返回的forgetToken修改密码（忘记密码渠道）*/
+    ServerResponse<String> resetPasswordByForgetToken(String username,String passwordNew,String forgetToken);
+    /*修改用户密码（用户登录之后）*/
+    ServerResponse<String> resetPassword(String passwordOld,String passwordNew,User user);
+    /*登录状态下修改用户信息*/
+    ServerResponse<User> updateInformation(User user);
+    /*获取登录用户信息*/
+    ServerResponse<User> getInformation(Integer userId);
+}

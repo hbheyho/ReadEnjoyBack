@@ -1,38 +1,224 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ReadEnjoyBack.dao.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.User" >
-    <constructor >
-      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="username" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="gender" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="headPic" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="question" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="answer" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="signs" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="role" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ReadEnjoyBack.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.User">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="gender" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="email" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="headPic" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="question" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="answer" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="signs" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="role" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </constructor>
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     id, username, gender, password, email, phone, headPic, question, answer, signs, role, 
     create_time, update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from readenjoy_user
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from readenjoy_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.User" >
+  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.User">
+    insert into readenjoy_user (id, username, gender, 
+      password, email, phone, 
+      headPic, question, answer, 
+      signs, role, create_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{headpic,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
+      #{signs,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.User">
+    insert into readenjoy_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="headpic != null">
+        headPic,
+      </if>
+      <if test="question != null">
+        question,
+      </if>
+      <if test="answer != null">
+        answer,
+      </if>
+      <if test="signs != null">
+        signs,
+      </if>
+      <if test="role != null">
+        role,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="headpic != null">
+        #{headpic,jdbcType=VARCHAR},
+      </if>
+      <if test="question != null">
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="signs != null">
+        #{signs,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.User">
+    update readenjoy_user
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="headpic != null">
+        headPic = #{headpic,jdbcType=VARCHAR},
+      </if>
+      <if test="question != null">
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="signs != null">
+        signs = #{signs,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.User">
+    update readenjoy_user
+    set username = #{username,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      headPic = #{headpic,jdbcType=VARCHAR},
+      question = #{question,jdbcType=VARCHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      signs = #{signs,jdbcType=VARCHAR},
+      role = #{role,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.User">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="gender" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="email" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="headPic" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="question" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="answer" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="signs" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="role" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, username, gender, password, email, phone, headPic, question, answer, signs, role, 
+    create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from readenjoy_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from readenjoy_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.User">
     insert into readenjoy_user (id, username, gender, 
       password, email, phone, 
       headPic, question, answer, 
@@ -44,134 +230,134 @@
       #{signs,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, now(),
       now())
   </insert>
-  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.User" >
+  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.User">
     insert into readenjoy_user
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="username != null" >
+      <if test="username != null">
         username,
       </if>
-      <if test="gender != null" >
+      <if test="gender != null">
         gender,
       </if>
-      <if test="password != null" >
+      <if test="password != null">
         password,
       </if>
-      <if test="email != null" >
+      <if test="email != null">
         email,
       </if>
-      <if test="phone != null" >
+      <if test="phone != null">
         phone,
       </if>
-      <if test="headpic != null" >
+      <if test="headpic != null">
         headPic,
       </if>
-      <if test="question != null" >
+      <if test="question != null">
         question,
       </if>
-      <if test="answer != null" >
+      <if test="answer != null">
         answer,
       </if>
-      <if test="signs != null" >
+      <if test="signs != null">
         signs,
       </if>
-      <if test="role != null" >
+      <if test="role != null">
         role,
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         create_time,
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         update_time,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="username != null" >
+      <if test="username != null">
         #{username,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null" >
+      <if test="gender != null">
         #{gender,jdbcType=VARCHAR},
       </if>
-      <if test="password != null" >
+      <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
-      <if test="email != null" >
+      <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null" >
+      <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="headpic != null" >
+      <if test="headpic != null">
         #{headpic,jdbcType=VARCHAR},
       </if>
-      <if test="question != null" >
+      <if test="question != null">
         #{question,jdbcType=VARCHAR},
       </if>
-      <if test="answer != null" >
+      <if test="answer != null">
         #{answer,jdbcType=VARCHAR},
       </if>
-      <if test="signs != null" >
+      <if test="signs != null">
         #{signs,jdbcType=VARCHAR},
       </if>
-      <if test="role != null" >
+      <if test="role != null">
         #{role,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         now(),
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         now(),
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.User" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.User">
     update readenjoy_user
-    <set >
-      <if test="username != null" >
+    <set>
+      <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null" >
+      <if test="gender != null">
         gender = #{gender,jdbcType=VARCHAR},
       </if>
-      <if test="password != null" >
+      <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="email != null" >
+      <if test="email != null">
         email = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null" >
+      <if test="phone != null">
         phone = #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="headpic != null" >
+      <if test="headpic != null">
         headPic = #{headpic,jdbcType=VARCHAR},
       </if>
-      <if test="question != null" >
+      <if test="question != null">
         question = #{question,jdbcType=VARCHAR},
       </if>
-      <if test="answer != null" >
+      <if test="answer != null">
         answer = #{answer,jdbcType=VARCHAR},
       </if>
-      <if test="signs != null" >
+      <if test="signs != null">
         signs = #{signs,jdbcType=VARCHAR},
       </if>
-      <if test="role != null" >
+      <if test="role != null">
         role = #{role,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
+      <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         update_time = now(),
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.User" >
+  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.User">
     update readenjoy_user
     set username = #{username,jdbcType=VARCHAR},
       gender = #{gender,jdbcType=VARCHAR},
@@ -187,4 +373,61 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--查询用户名以及email是否存在-->
+  <select id="checkUsername" parameterType="string" resultType="int">
+    SELECT COUNT(1) FROM readenjoy_user
+    WHERE username = #{username}
+  </select>
+  <select id="checkEmail" parameterType="string" resultType="int">
+    SELECT  COUNT(1) FROM readenjoy_user
+    WHERE email = #{email}
+  </select>
+
+  <!--登录操作(进行用户名和密码操作)-->
+  <select id="selectLogin" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM readenjoy_user
+    WHERE username = #{username}
+    AND password = #{password}
+  </select>
+
+  <!--根据用户名获取密保问题-->
+  <select id="getQuestionByUsername" parameterType="string" resultType="string">
+    SELECT question
+    FROM readenjoy_user
+    WHERE username = #{username}
+  </select>
+
+  <!--检查用户输入答案正确与否-->
+  <select id="checkAnswer" parameterType="map" resultType="int">
+    SELECT count(1)
+    FROM readenjoy_user
+    WHERE username = #{username}
+    AND question = #{question}
+    AND answer = #{answer}
+  </select>
+
+  <!--修改用户密码（忘记密码渠道）-->
+  <update id="updatePasswordByusername" parameterType="map">
+    UPDATE readenjoy_user
+    SET password = #{passwordNew},update_time = now()
+    WHERE username = #{username}
+  </update>
+
+  <!--对用户旧密码进行检验-->
+  <select id="checkUserOlaPassword" parameterType="map" resultType="int">
+    SELECT COUNT(1)
+    FROM readenjoy_user
+    WHERE id = #{userId}
+    AND password = #{passwordOld}
+  </select>
+
+  <!--/*根据用户ID进行邮箱检查*/-->
+  <select id="checkEmailByUserId" parameterType="map" resultType="int">
+    SELECT COUNT(1) FROM readenjoy_user
+    WHERE email = #{email}
+    AND id != #{userId}
+  </select>
 </mapper>
