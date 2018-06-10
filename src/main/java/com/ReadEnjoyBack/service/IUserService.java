@@ -9,6 +9,7 @@ import com.ReadEnjoyBack.pojo.User;
  * @Createdata:Created in  15:43  2018/5/17.
  */
 public interface IUserService {
+ /*------------------------------------- 前台 ---------------------------------------*/
    /*用户登录*/
     ServerResponse<User> login(String username, String password);
     /*用户注册*/
@@ -27,4 +28,8 @@ public interface IUserService {
     ServerResponse<User> updateInformation(User user);
     /*获取登录用户信息*/
     ServerResponse<User> getInformation(Integer userId);
+
+   /*------------------------------------- 后台 ---------------------------------------*/
+   /*检验是否有管理员权限*/
+    ServerResponse<String> checkAdminRole(User user);
 }

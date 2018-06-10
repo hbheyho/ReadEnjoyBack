@@ -32,11 +32,14 @@ public interface UserMapper {
     int checkAnswer(@Param("username") String username, @Param("question") String question, @Param("answer") String answer);
 
     /*修改用户密码(忘记密码通道)*/
-    int updatePasswordByusername(@Param("usename") String username, @Param("passwordNew") String passwordNew);
+    int updatePasswordByusername(@Param("username") String username, @Param("passwordNew") String passwordNew);
 
     /*对用户旧密码进行检查*/
     int  checkUserOlaPassword(@Param("passwordOld") String passwordOld,@Param("userId") Integer userId);
 
     /*根据用户ID进行邮箱检查*/
     int checkEmailByUserId(@Param("email") String email , @Param("userId") Integer userId );
+
+    /*用户头像更新*/
+    int updateUserHeadPicByUserName(@Param("uploadFileName") String uploadFileName, @Param("userName") String userName);
 }

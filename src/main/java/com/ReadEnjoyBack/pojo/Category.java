@@ -2,14 +2,12 @@ package com.ReadEnjoyBack.pojo;
 
 import java.util.Date;
 
-public class Navigation {
+public class Category {
     private Integer id;
 
     private Integer parentId;
 
     private String name;
-
-    private String url;
 
     private Boolean status;
 
@@ -19,27 +17,18 @@ public class Navigation {
 
     private Date updatetime;
 
-    public Navigation(Integer id, Integer parentId, String name,String url, Boolean status, Integer sortOrder, Date creatTime, Date updatetime) {
+    public Category(Integer id, Integer parentId, String name, Boolean status, Integer sortOrder, Date creatTime, Date updatetime) {
         this.id = id;
         this.parentId = parentId;
         this.name = name;
-        this.url = url;
         this.status = status;
         this.sortOrder = sortOrder;
         this.creatTime = creatTime;
         this.updatetime = updatetime;
     }
 
-    public Navigation() {
+    public Category() {
         super();
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public Integer getId() {
@@ -104,9 +93,9 @@ public class Navigation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Navigation navigation = (Navigation) o;
+        Category category = (Category) o;
 
-        return !(id != null ? !id.equals(navigation.id) : navigation.id != null);
+        return !(id != null ? !id.equals(category.id) : category.id != null);
 
     }
 

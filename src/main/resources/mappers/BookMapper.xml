@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ReadEnjoyBack.dao.BookMapper" >
+  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.Book" >
+    <constructor >
+      <idArg column="book_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_ISBN" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_writer" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_transter" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_publish" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_info" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_directory" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_writer_information" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_image" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_score" jdbcType="DOUBLE" javaType="java.lang.Double" />
+      <arg column="book_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_down_number" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_id, book_ISBN, category_id, book_name, book_writer, book_transter, book_publish, 
+    book_info, book_directory, book_writer_information, book_image, book_score, book_status,book_down_number, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from readenjoy_book
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from readenjoy_book
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.Book" >
+    insert into readenjoy_book (book_id, book_ISBN, category_id, 
+      book_name, book_writer, book_transter, 
+      book_publish, book_info, book_directory, 
+      book_writer_information, book_image, book_score, book_status,book_down_number,
+      create_time, update_time)
+    values (#{bookId,jdbcType=INTEGER}, #{bookIsbn,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, 
+      #{bookName,jdbcType=VARCHAR}, #{bookWriter,jdbcType=VARCHAR}, #{bookTranster,jdbcType=VARCHAR}, 
+      #{bookPublish,jdbcType=VARCHAR}, #{bookInfo,jdbcType=VARCHAR}, #{bookDirectory,jdbcType=VARCHAR}, 
+      #{bookWriterInformation,jdbcType=VARCHAR}, #{bookImage,jdbcType=VARCHAR}, #{bookScore,jdbcType=DOUBLE},
+      #{bookStatus,jdbcType=INTEGER},#{book_down_number,jdbcType=INTEGER}, now(), now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.Book" >
+    insert into readenjoy_book
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="bookIsbn != null" >
+        book_ISBN,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="bookName != null" >
+        book_name,
+      </if>
+      <if test="bookWriter != null" >
+        book_writer,
+      </if>
+      <if test="bookTranster != null" >
+        book_transter,
+      </if>
+      <if test="bookPublish != null" >
+        book_publish,
+      </if>
+      <if test="bookInfo != null" >
+        book_info,
+      </if>
+      <if test="bookDirectory != null" >
+        book_directory,
+      </if>
+      <if test="bookWriterInformation != null" >
+        book_writer_information,
+      </if>
+      <if test="bookImage != null" >
+        book_image,
+      </if>
+      <if test="bookScore != null" >
+        book_score,
+      </if>
+      <if test="bookStatus != null" >
+        book_status,
+      </if>
+      <if test="book_down_number != null" >
+        book_down_number,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="bookIsbn != null" >
+        #{bookIsbn,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null" >
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="bookWriter != null" >
+        #{bookWriter,jdbcType=VARCHAR},
+      </if>
+      <if test="bookTranster != null" >
+        #{bookTranster,jdbcType=VARCHAR},
+      </if>
+      <if test="bookPublish != null" >
+        #{bookPublish,jdbcType=VARCHAR},
+      </if>
+      <if test="bookInfo != null" >
+        #{bookInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="bookDirectory != null" >
+        #{bookDirectory,jdbcType=VARCHAR},
+      </if>
+      <if test="bookWriterInformation != null" >
+        #{bookWriterInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="bookImage != null" >
+        #{bookImage,jdbcType=VARCHAR},
+      </if>
+      <if test="bookScore != null" >
+        #{bookScore,jdbcType=DOUBLE},
+      </if>
+      <if test="bookStatus != null" >
+        #{bookStatus,jdbcType=INTEGER},
+      </if>
+      <if test="book_down_number != null" >
+        book_down_number,
+      </if>
+      <if test="createTime != null" >
+        now(),
+      </if>
+      <if test="updateTime != null" >
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.Book" >
+    update readenjoy_book
+    <set >
+      <if test="bookIsbn != null" >
+        book_ISBN = #{bookIsbn,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null" >
+        book_name = #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="bookWriter != null" >
+        book_writer = #{bookWriter,jdbcType=VARCHAR},
+      </if>
+      <if test="bookTranster != null" >
+        book_transter = #{bookTranster,jdbcType=VARCHAR},
+      </if>
+      <if test="bookPublish != null" >
+        book_publish = #{bookPublish,jdbcType=VARCHAR},
+      </if>
+      <if test="bookInfo != null" >
+        book_info = #{bookInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="bookDirectory != null" >
+        book_directory = #{bookDirectory,jdbcType=VARCHAR},
+      </if>
+      <if test="bookWriterInformation != null" >
+        book_writer_information = #{bookWriterInformation,jdbcType=VARCHAR},
+      </if>
+      <if test="bookImage != null" >
+        book_image = #{bookImage,jdbcType=VARCHAR},
+      </if>
+      <if test="bookScore != null" >
+        book_score = #{bookScore,jdbcType=DOUBLE},
+      </if>
+      <if test="bookStatus != null" >
+        book_status = #{bookStatus,jdbcType=INTEGER},
+      </if>
+      <if test="book_down_number != null" >
+        book_down_number = #{book_down_number,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = now(),
+      </if>
+    </set>
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.Book" >
+    update readenjoy_book
+    set book_ISBN = #{bookIsbn,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      book_name = #{bookName,jdbcType=VARCHAR},
+      book_writer = #{bookWriter,jdbcType=VARCHAR},
+      book_transter = #{bookTranster,jdbcType=VARCHAR},
+      book_publish = #{bookPublish,jdbcType=VARCHAR},
+      book_info = #{bookInfo,jdbcType=VARCHAR},
+      book_directory = #{bookDirectory,jdbcType=VARCHAR},
+      book_writer_information = #{bookWriterInformation,jdbcType=VARCHAR},
+      book_image = #{bookImage,jdbcType=VARCHAR},
+      book_score = #{bookScore,jdbcType=DOUBLE},
+      book_status = #{bookStatus,jdbcType=INTEGER},
+      book_down_number = #{book_down_number,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+
+  <!--后台-->
+  <!--对书籍进行列表查询-->
+  <select id="selectList" resultMap="BaseResultMap">
+     SELECT
+       <include refid="Base_Column_List"/>
+    FROM readenjoy_book
+    ORDER BY book_id ASC
+  </select>
+
+  <!--书籍搜索操作-->
+  <select id="selectBookByBookNameOrBookWriterOrPublicNameBack" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+       <include refid="Base_Column_List"/>
+    FROM readenjoy_book a ,readenjoy_bookcategory b
+    WHERE a.category_id = b.id
+      <if test="bookName != null">
+        AND book_name LIKE #{bookName}
+      </if>
+      <if test="bookWriter != null">
+        AND book_writer LIKE #{bookWriter}
+      </if>
+      <if test="publishName != null">
+        AND book_publish LIKE #{publishName}
+      </if>
+      <if test="categoryName != null">
+        AND b.name LIKE #{categoryName}
+      </if>
+  </select>
+
+
+  <!--前台 -->
+  <!--根据书籍ISBN获取书籍详细信息-->
+  <select id="getBookDetail" resultMap="BaseResultMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from readenjoy_book
+    where book_ISBN = #{bookISBN}
+  </select>
+  <!--/*得到书籍列表通过书籍下载量*/-->
+  <select id="getBookListByDownNumber" resultMap="BaseResultMap">
+    SELECT
+       <include refid="Base_Column_List"/>
+    FROM readenjoy_book
+    WHERE book_down_number >= 500
+    ORDER BY  book_down_number DESC LIMIT 50
+  </select>
+  <!--根据书名/作者/出版社/对书籍进行查询(前台)-->
+ <select id="selectBookByBookNameOrBookWriterOrPublicNameFront"  parameterType="string" resultMap="BaseResultMap">
+   SELECT
+      <include refid="Base_Column_List"/>
+   FROM readenjoy_book
+   <where>
+     <if test="conditionName != null">
+        AND CONCAT(book_name,book_publish,book_writer) LIKE #{conditionName}
+     </if>
+   </where>
+ </select>
+
+</mapper>

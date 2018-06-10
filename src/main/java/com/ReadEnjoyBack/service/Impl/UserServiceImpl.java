@@ -23,6 +23,8 @@ public class UserServiceImpl implements IUserService {
     /*注入usermapper*/
     @Autowired
     private UserMapper userMapper;
+
+    /*------------------------------------- 前台 ---------------------------------------*/
     /*
      * @Author:HB
      * @Description:  用户登录
@@ -248,5 +250,23 @@ public class UserServiceImpl implements IUserService {
         //密码置空
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccesse(user);
+    }
+
+
+    /*------------------------------------- 后台 ---------------------------------------*/
+    /*
+     * @Author:HB
+     * @Description: 检查是否有管理员权限
+     * @Data:11:08 2018/5/24
+     * @param user
+     returns:com.ReadEnjoyBack.common.ServerResponse<java.lang.String>
+     */
+    @Override
+    public ServerResponse<String> checkAdminRole(User user) {
+        if (user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }else{
+           return ServerResponse.createByError();
+        }
     }
 }

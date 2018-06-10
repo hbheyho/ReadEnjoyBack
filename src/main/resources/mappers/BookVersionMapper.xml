@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ReadEnjoyBack.dao.BookVersionMapper" >
+  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.BookVersion" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="upload_user" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_ISBN" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_size" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_originName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_uploadName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="down_number" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="collect_number" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="upload_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, upload_user, book_ISBN, book_size, book_originName, book_uploadName, down_number, 
+    collect_number, upload_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from readenjoy_bookversion
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from readenjoy_bookversion
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.BookVersion" >
+    insert into readenjoy_bookversion (id, upload_user, book_ISBN, 
+      book_size, book_originName, book_uploadName, 
+      down_number, collect_number, upload_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{uploadUser,jdbcType=VARCHAR}, #{bookIsbn,jdbcType=VARCHAR}, 
+      #{bookSize,jdbcType=VARCHAR}, #{bookOriginname,jdbcType=VARCHAR}, #{bookUploadname,jdbcType=VARCHAR}, 
+      #{downNumber,jdbcType=INTEGER}, #{collectNumber,jdbcType=INTEGER}, now(),
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.BookVersion" >
+    insert into readenjoy_bookversion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uploadUser != null" >
+        upload_user,
+      </if>
+      <if test="bookIsbn != null" >
+        book_ISBN,
+      </if>
+      <if test="bookSize != null" >
+        book_size,
+      </if>
+      <if test="bookOriginname != null" >
+        book_originName,
+      </if>
+      <if test="bookUploadname != null" >
+        book_uploadName,
+      </if>
+      <if test="downNumber != null" >
+        down_number,
+      </if>
+      <if test="collectNumber != null" >
+        collect_number,
+      </if>
+      <if test="uploadTime != null" >
+        upload_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uploadUser != null" >
+        #{uploadUser,jdbcType=VARCHAR},
+      </if>
+      <if test="bookIsbn != null" >
+        #{bookIsbn,jdbcType=VARCHAR},
+      </if>
+      <if test="bookSize != null" >
+        #{bookSize,jdbcType=VARCHAR},
+      </if>
+      <if test="bookOriginname != null" >
+        #{bookOriginname,jdbcType=VARCHAR},
+      </if>
+      <if test="bookUploadname != null" >
+        #{bookUploadname,jdbcType=VARCHAR},
+      </if>
+      <if test="downNumber != null" >
+        #{downNumber,jdbcType=INTEGER},
+      </if>
+      <if test="collectNumber != null" >
+        #{collectNumber,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null" >
+        now(),
+      </if>
+      <if test="updateTime != null" >
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.BookVersion" >
+    update readenjoy_bookversion
+    <set >
+      <if test="uploadUser != null" >
+        upload_user = #{uploadUser,jdbcType=VARCHAR},
+      </if>
+      <if test="bookIsbn != null" >
+        book_ISBN = #{bookIsbn,jdbcType=VARCHAR},
+      </if>
+      <if test="bookSize != null" >
+        book_size = #{bookSize,jdbcType=VARCHAR},
+      </if>
+      <if test="bookOriginname != null" >
+        book_originName = #{bookOriginname,jdbcType=VARCHAR},
+      </if>
+      <if test="bookUploadname != null" >
+        book_uploadName = #{bookUploadname,jdbcType=VARCHAR},
+      </if>
+      <if test="downNumber != null" >
+        down_number = #{downNumber,jdbcType=INTEGER},
+      </if>
+      <if test="collectNumber != null" >
+        collect_number = #{collectNumber,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null" >
+        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.BookVersion" >
+    update readenjoy_bookversion
+    set upload_user = #{uploadUser,jdbcType=VARCHAR},
+      book_ISBN = #{bookIsbn,jdbcType=VARCHAR},
+      book_size = #{bookSize,jdbcType=VARCHAR},
+      book_originName = #{bookOriginname,jdbcType=VARCHAR},
+      book_uploadName = #{bookUploadname,jdbcType=VARCHAR},
+      down_number = #{downNumber,jdbcType=INTEGER},
+      collect_number = #{collectNumber,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--通过uploadName 得到 originName-->
+  <select id="getOrignName" parameterType="string" resultType="string">
+    SELECT book_originName
+    FROM readenjoy_bookversion
+    WHERE book_uploadName = #{uploadName}
+  </select>
+  <!--通过uploadName 得到 originName-->
+  <select id="getBookVersionId" parameterType="string" resultType="int">
+    SELECT id
+    FROM readenjoy_bookversion
+    WHERE book_uploadName = #{uploadName}
+  </select>
+  <!--根据书籍的ISBN获得书籍的版本信息-->
+  <select id="selectByBookISBN" parameterType="string" resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List"/>
+    FROM readenjoy_bookversion
+    WHERE book_ISBN = #{bookISBN}
+    ORDER BY id DESC
+  </select>
+  <!--/*对书籍下载次数进行更新*/-->
+  <update id="updateDownNumber" parameterType="int">
+    UPDATE readenjoy_bookversion
+    SET down_number = down_number+1
+    WHERE id = #{versionId}
+  </update>
+  <!--对书籍收藏次数进行更新-->
+  <update id="updateCollectNumber" parameterType="int">
+    UPDATE readenjoy_bookversion
+    SET collect_number = collect_number+1
+    WHERE id = #{versionId}
+  </update>
+
+</mapper>
