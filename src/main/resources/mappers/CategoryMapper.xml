@@ -31,7 +31,7 @@
       updatetime)
     values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
       #{status,jdbcType=BIT}, #{sortOrder,jdbcType=INTEGER}, now(),
-      now()
+      now())
   </insert>
   <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.Category" >
     insert into readenjoy_bookcategory

@@ -25,7 +25,8 @@ public interface BookMapper {
                                                             @Param(value = "bookWriter") String bookWriter,
                                                             @Param(value = "publishName")String publishName,
                                                             @Param(value = "categoryName")String categoryName );
-
+   /*检查书籍状态*/
+    Integer selectBookStatus(@Param("bookId") Integer bookId);
 /*--------------------------------------------前台------------------------------------------------------------*/
     /*得到书籍列表通过书籍下载量*/
     List<Book> getBookListByDownNumber();
@@ -33,4 +34,6 @@ public interface BookMapper {
     List<Book> selectBookByBookNameOrBookWriterOrPublicNameFront(@Param("conditionName") String conditionName);
     /*通过书籍ISBN获取书籍详细信息*/
     Book getBookDetail(@Param("bookISBN") String BookISBN);
+    /*检查书籍ISBN是否存在*/
+    int checkBookIsbn(@Param("bookIsbn") String bookIsbn);
 }

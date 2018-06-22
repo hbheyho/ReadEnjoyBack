@@ -184,5 +184,62 @@
     SET collect_number = collect_number+1
     WHERE id = #{versionId}
   </update>
+<!--得到当前登录用户的收藏书籍信息-->
+  <select id="selectUserCollection" parameterType="string" resultMap="bookVersionWithUsercollect">
+     SELECT a.book_ISBN, a.book_size, a.book_originName ,b.id,b.collect_time
+     FROM readenjoy_bookversion a,readenjoy_usercollection b
+     WHERE a.id=b.book_version_ID  AND b.user_name = #{username}
+     ORDER BY b.id DESC
+  </select>
+  <!--得到当前登录用户的收藏书籍信息-->
+  <resultMap id="bookVersionWithUsercollect" type="com.ReadEnjoyBack.pojo.BookVersion">
+    <id property="id" column="id"></id>
+    <result property="bookIsbn" column="book_ISBN"></result>
+    <result property="bookSize" column="book_size"></result>
+    <result property="bookOriginname" column="book_originName"></result>
+    <collection property="userCollectionList" ofType="com.ReadEnjoyBack.pojo.UserCollection">
+      <id property="id" column="id"></id>
+      <result property="collectTime" column="collect_time"></result>
+    </collection>
+  </resultMap>
+  <!--得到当前登录用户的上传书籍信息-->
+  <select id="selectUserUpload" parameterType="string" resultMap="bookVersionWithUserUpload">
+    SELECT a.book_ISBN, a.book_size, a.book_originName ,a.upload_time,b.id
+    FROM readenjoy_bookversion a, readenjoy_userupload b
+    WHERE a.id=b.book_version_ID  AND b.user_name= #{username}
+    ORDER BY b.id DESC
+  </select>
+  <resultMap id="bookVersionWithUserUpload" type="com.ReadEnjoyBack.pojo.BookVersion">
+    <id property="id" column="id"></id>
+    <result property="bookIsbn" column="book_ISBN"></result>
+    <result property="bookSize" column="book_size"></result>
+    <result property="bookOriginname" column="book_originName"></result>
+    <result property="uploadTime" column="upload_time"></result>
+    <collection property="userUploadList" ofType="com.ReadEnjoyBack.pojo.UserUpload">
+      <id property="id" column="id"></id>
+    </collection>
+  </resultMap>
 
+  <!--得到当前登录用户的下载书籍信息-->
+  <select id="selectUserDown" parameterType="string" resultMap="bookVersionWithUserDownload">
+   SELECT a.book_ISBN, a.book_size, a.book_originName ,b.down_time,b.id
+   FROM readenjoy_bookversion a, readenjoy_userdownload b
+   WHERE a.id=b.book_version_ID AND b.user_name = #{username}
+   ORDER BY b.id DESC
+  </select>
+  <resultMap id="bookVersionWithUserDownload" type="com.ReadEnjoyBack.pojo.BookVersion">
+    <id property="id" column="id"></id>
+    <result property="bookIsbn" column="book_ISBN"></result>
+    <result property="bookSize" column="book_size"></result>
+    <result property="bookOriginname" column="book_originName"></result>
+    <collection property="userDownLoadList" ofType="com.ReadEnjoyBack.pojo.UserDownLoad">
+      <id property="id" column="id"></id>
+      <result property="downTime" column="down_time"></result>
+    </collection>
+  </resultMap>
+  <select id="selectBookVersionNumber" parameterType="string" resultType="int">
+    SELECT COUNT(1)
+    FROM readenjoy_bookversion
+    WHERE book_ISBN = #{bookISBN}
+  </select>
 </mapper>

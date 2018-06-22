@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 import javax.xml.ws.spi.http.HttpContext;
+import java.util.List;
 
 /**
  * @Author:HB
@@ -43,18 +44,16 @@ public class UserController {
      */
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse response,
+    public ServerResponse<User> login(String email, String password, HttpSession session, HttpServletResponse response,
                                       HttpServletRequest request){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         // 跨域保证session 同一性
         response.addHeader("Access-Control-Allow-Credentials","true");
-        ServerResponse<User> responseInfo = iUserService.login(username,password);
+        ServerResponse<User> responseInfo = iUserService.login(email,password);
         if (responseInfo.isSuccess()){
            session.setAttribute(Const.CURRENT_USER,responseInfo.getData());
         }
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        System.out.println("用户信息是："+ user);
         return responseInfo;
     }
     /*
@@ -120,25 +119,24 @@ public class UserController {
         // 跨域的session 保证同一性
         response.addHeader("Access-Control-Allow-Credentials","true");
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        System.out.println("用户信息是："+ user);
         if (user != null){
             return ServerResponse.createBySuccesse(user);
         }
-        return ServerResponse.createBySuccessMessage("用户暂未登录");
+        return ServerResponse.createByErrorMessage("用户暂未登录");
     }
     /*
      * @Author:HB
-     * @Description: 根据用户名得到用户的密保问题
+     * @Description: 根据email得到用户的密保问题
      * @Data:8:52 2018/5/21
      * @param username
      returns:com.ReadEnjoyBack.common.ServerResponse<java.lang.String>
     */
     @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> getQuestionByUsername(String username,HttpServletResponse response,HttpServletRequest request){
+    public ServerResponse<String> getQuestionByEmail(String email,HttpServletResponse response,HttpServletRequest request){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
-        return iUserService.getQuestionByUsername(username);
+        return iUserService.getQuestionByEmail(email);
     }
     /*
      * @Author:HB
@@ -151,11 +149,11 @@ public class UserController {
      */
     @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> checkAnswerByQuestion(String username,String question,String answer,HttpServletRequest request
+    public ServerResponse<String> checkAnswerByQuestion(String email,String question,String answer,HttpServletRequest request
     ,HttpServletResponse response){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
-        return iUserService.checkAnswerByQuestion(username,question,answer);
+        return iUserService.checkAnswerByQuestion(email,question,answer);
     }
     /*
      * @Author:HB
@@ -168,11 +166,11 @@ public class UserController {
      */
     @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> resetPasswordByForgetToken(String username,String passwordNew,String forgetToken ,HttpServletRequest request
+    public ServerResponse<String> resetPasswordByForgetToken(String email,String passwordNew,String forgetToken ,HttpServletRequest request
             ,HttpServletResponse response){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
-        return iUserService.resetPasswordByForgetToken(username,passwordNew,forgetToken);
+        return iUserService.resetPasswordByForgetToken(email,passwordNew,forgetToken);
     }
     /*
     * @Author:HB
@@ -218,7 +216,6 @@ public class UserController {
         }
         System.out.println(user);
         user.setId(currentUser.getId());
-        user.setUsername(currentUser.getUsername());
         ServerResponse<User> responseInfo = iUserService.updateInformation(user);
         if (responseInfo.isSuccess()){
             session.setAttribute(Const.CURRENT_USER,responseInfo.getData());
@@ -241,7 +238,7 @@ public class UserController {
         response.addHeader("Access-Control-Allow-Credentials","true");
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，需要强制登录");
+            return ServerResponse.createByErrorMessage("请登录哦");
         }
         return iUserService.getInformation(currentUser.getId());
     }
@@ -268,6 +265,7 @@ public class UserController {
         // 上传文件的路径
         String path =request.getSession().getServletContext().getRealPath("upload");
         return iFileService.uploadImg(file,path,user.getUsername());
+
         /*String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;*/
         // url拼接返回
         /*Map fileMap = Maps.newHashMap();
@@ -275,7 +273,4 @@ public class UserController {
         fileMap.put("url",url);*/
         /*return ServerResponse.createBySuccesse(fileMap);*/
     }
-
-
-
 }

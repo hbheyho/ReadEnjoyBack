@@ -18,6 +18,16 @@ public class UserDownLoad {
         this.downTime = downTime;
     }
 
+    @Override
+    public String toString() {
+        return "UserDownLoad{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", bookVersionId=" + bookVersionId +
+                ", downTime=" + downTime +
+                '}';
+    }
+
     public UserDownLoad() {
         super();
     }

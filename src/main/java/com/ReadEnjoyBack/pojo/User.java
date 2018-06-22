@@ -25,11 +25,43 @@ public class User {
 
     private Integer role;
 
+    private Integer status;
+
     private Date createTime;
 
     private Date updateTime;
 
-    public User(Integer id, String username, String gender, String password, String email, String phone, String headpic, String question, String answer, String signs, Integer role, Date createTime, Date updateTime) {
+    private String imageHost; // 个人头像存储所在的image地址
+
+    private String CTime;  //  用户创建时间
+
+    private String UTime;  // 用户更新时间
+
+    public String getCTime() {
+        return CTime;
+    }
+
+    public void setCTime(String CTime) {
+        this.CTime = CTime;
+    }
+
+    public String getUTime() {
+        return UTime;
+    }
+
+    public void setUTime(String UTime) {
+        this.UTime = UTime;
+    }
+
+    public String getImageHost() {
+        return imageHost;
+    }
+
+    public void setImageHost(String imageHost) {
+        this.imageHost = imageHost;
+    }
+
+    public User(Integer id, String username, String gender, String password, String email, String phone, String headpic, String question, String answer, String signs, Integer role,Integer status ,Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
         this.gender = gender;
@@ -41,8 +73,30 @@ public class User {
         this.answer = answer;
         this.signs = signs;
         this.role = role;
+        this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", gender='" + gender + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", headpic='" + headpic + '\'' +
+                ", question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                ", signs='" + signs + '\'' +
+                ", role=" + role +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", imageHost='" + imageHost + '\'' +
+                '}';
     }
 
     public User() {
@@ -135,6 +189,14 @@ public class User {
 
     public void setRole(Integer role) {
         this.role = role;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getCreateTime() {

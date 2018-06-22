@@ -14,12 +14,13 @@
       <arg column="answer" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="signs" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="role" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
       <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List">
-    id, username, gender, password, email, phone, headPic, question, answer, signs, role, 
+    id, username, gender, password, email, phone, headPic, question, answer, signs, role,status,
     create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -36,12 +37,12 @@
     insert into readenjoy_user (id, username, gender, 
       password, email, phone, 
       headPic, question, answer, 
-      signs, role, create_time, 
+      signs, role,status, create_time,
       update_time)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{headpic,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
-      #{signs,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, now(),
+      #{signs,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER},#{status,jdbcType=INTEGER}, now(),
       now())
   </insert>
   <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.User">
@@ -79,6 +80,9 @@
       </if>
       <if test="role != null">
         role,
+      </if>
+      <if test="status != null">
+        status,
       </if>
       <if test="createTime != null">
         create_time,
@@ -121,6 +125,9 @@
       <if test="role != null">
         #{role,jdbcType=INTEGER},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         now(),
       </if>
@@ -162,6 +169,9 @@
       <if test="role != null">
         role = #{role,jdbcType=INTEGER},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -183,6 +193,7 @@
       answer = #{answer,jdbcType=VARCHAR},
       signs = #{signs,jdbcType=VARCHAR},
       role = #{role,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
@@ -194,7 +205,7 @@
     WHERE username = #{username}
   </select>
   <select id="checkEmail" parameterType="string" resultType="int">
-    SELECT  COUNT(1) FROM readenjoy_user
+    SELECT COUNT(1) FROM readenjoy_user
     WHERE email = #{email}
   </select>
 
@@ -203,31 +214,31 @@
     SELECT
       <include refid="Base_Column_List" />
     FROM readenjoy_user
-    WHERE username = #{username}
+    WHERE email = #{email}
     AND password = #{password}
   </select>
 
   <!--根据用户名获取密保问题-->
-  <select id="getQuestionByUsername" parameterType="string" resultType="string">
+  <select id="getQuestionByEmail" parameterType="string" resultType="string">
     SELECT question
     FROM readenjoy_user
-    WHERE username = #{username}
+    WHERE email = #{email}
   </select>
 
   <!--检查用户输入答案正确与否-->
   <select id="checkAnswer" parameterType="map" resultType="int">
     SELECT count(1)
     FROM readenjoy_user
-    WHERE username = #{username}
+    WHERE email = #{email}
     AND question = #{question}
     AND answer = #{answer}
   </select>
 
   <!--修改用户密码（忘记密码渠道）-->
-  <update id="updatePasswordByusername" parameterType="map">
+  <update id="updatePasswordByEmail" parameterType="map">
     UPDATE readenjoy_user
     SET password = #{passwordNew},update_time = now()
-    WHERE username = #{username}
+    WHERE email = #{email}
   </update>
 
   <!--对用户旧密码进行检验-->
@@ -239,9 +250,9 @@
   </select>
 
   <!--/*根据用户ID进行邮箱检查*/-->
-  <select id="checkEmailByUserId" parameterType="map" resultType="int">
+  <select id="checkUsernameByUserId" parameterType="map" resultType="int">
     SELECT COUNT(1) FROM readenjoy_user
-    WHERE email = #{email}
+    WHERE username = #{userName}
     AND id != #{userId}
   </select>
 
@@ -251,4 +262,16 @@
     SET headPic = #{uploadFileName}
     WHERE username = #{userName}
   </update>
+
+  <!--得到用户列表-->
+  <select id="selectUserList" resultMap="BaseResultMap">
+    SELECT
+       <include refid="Base_Column_List"/>
+    FROM readenjoy_user
+  </select>
+  <select id="selectUserStatus"  parameterType="int" resultType="int">
+    SELECT status
+    FROM readenjoy_user
+    WHERE id = #{userId}
+  </select>
 </mapper>

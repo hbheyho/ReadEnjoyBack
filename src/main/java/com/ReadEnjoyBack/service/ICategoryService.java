@@ -19,5 +19,5 @@ public interface ICategoryService {
     /*获取当前导分类的子节点(平级)*/
     ServerResponse<List<Category>>  getChildrenParallelCategory(Integer categoryId);
     /*获取当前分类的子节点(递归)*/
-    ServerResponse<List<Integer>> getDeepChildrenParallelCategory(Integer categoryId);
+    ServerResponse<List<Category>> getDeepChildrenParallelCategory(Integer categoryId);
 }

@@ -1,6 +1,9 @@
+
+
 package com.ReadEnjoyBack.pojo;
 
 import java.util.Date;
+import java.util.List;
 
 public class BookVersion {
     private Integer id;
@@ -23,6 +26,16 @@ public class BookVersion {
 
     private Date updateTime;
 
+    private List<UserCollection> userCollectionList;  // 版本的用户收藏属性
+
+    private List<UserUpload> userUploadList;  // 版本的用户上传信息
+
+    private List<UserDownLoad> userDownLoadList; // 版本的用户下载信息
+
+    public BookVersion() {
+        super();
+    }
+
     public BookVersion(Integer id, String uploadUser, String bookIsbn, String bookSize, String bookOriginname, String bookUploadname, Integer downNumber, Integer collectNumber, Date uploadTime, Date updateTime) {
         this.id = id;
         this.uploadUser = uploadUser;
@@ -36,8 +49,23 @@ public class BookVersion {
         this.updateTime = updateTime;
     }
 
-    public BookVersion() {
-        super();
+    @Override
+    public String toString() {
+        return "BookVersion{" +
+                "id=" + id +
+                ", uploadUser='" + uploadUser + '\'' +
+                ", bookIsbn='" + bookIsbn + '\'' +
+                ", bookSize='" + bookSize + '\'' +
+                ", bookOriginname='" + bookOriginname + '\'' +
+                ", bookUploadname='" + bookUploadname + '\'' +
+                ", downNumber=" + downNumber +
+                ", collectNumber=" + collectNumber +
+                ", uploadTime=" + uploadTime +
+                ", updateTime=" + updateTime +
+                ", userCollectionList=" + userCollectionList +
+                ", userUploadList=" + userUploadList +
+                ", userDownLoadList=" + userDownLoadList +
+                '}';
     }
 
     public Integer getId() {
@@ -53,7 +81,7 @@ public class BookVersion {
     }
 
     public void setUploadUser(String uploadUser) {
-        this.uploadUser = uploadUser == null ? null : uploadUser.trim();
+        this.uploadUser = uploadUser;
     }
 
     public String getBookIsbn() {
@@ -61,7 +89,7 @@ public class BookVersion {
     }
 
     public void setBookIsbn(String bookIsbn) {
-        this.bookIsbn = bookIsbn == null ? null : bookIsbn.trim();
+        this.bookIsbn = bookIsbn;
     }
 
     public String getBookSize() {
@@ -69,7 +97,7 @@ public class BookVersion {
     }
 
     public void setBookSize(String bookSize) {
-        this.bookSize = bookSize == null ? null : bookSize.trim();
+        this.bookSize = bookSize;
     }
 
     public String getBookOriginname() {
@@ -77,7 +105,7 @@ public class BookVersion {
     }
 
     public void setBookOriginname(String bookOriginname) {
-        this.bookOriginname = bookOriginname == null ? null : bookOriginname.trim();
+        this.bookOriginname = bookOriginname;
     }
 
     public String getBookUploadname() {
@@ -85,7 +113,7 @@ public class BookVersion {
     }
 
     public void setBookUploadname(String bookUploadname) {
-        this.bookUploadname = bookUploadname == null ? null : bookUploadname.trim();
+        this.bookUploadname = bookUploadname;
     }
 
     public Integer getDownNumber() {
@@ -118,5 +146,29 @@ public class BookVersion {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<UserCollection> getUserCollectionList() {
+        return userCollectionList;
+    }
+
+    public void setUserCollectionList(List<UserCollection> userCollectionList) {
+        this.userCollectionList = userCollectionList;
+    }
+
+    public List<UserUpload> getUserUploadList() {
+        return userUploadList;
+    }
+
+    public void setUserUploadList(List<UserUpload> userUploadList) {
+        this.userUploadList = userUploadList;
+    }
+
+    public List<UserDownLoad> getUserDownLoadList() {
+        return userDownLoadList;
+    }
+
+    public void setUserDownLoadList(List<UserDownLoad> userDownLoadList) {
+        this.userDownLoadList = userDownLoadList;
     }
 }

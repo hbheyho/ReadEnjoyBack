@@ -3,6 +3,7 @@ package com.ReadEnjoyBack.controller.backend;
 import com.ReadEnjoyBack.common.Const;
 import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
+import com.ReadEnjoyBack.pojo.Category;
 import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.service.ICategoryService;
 import com.ReadEnjoyBack.service.IUserService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @Author:HB
@@ -129,8 +131,8 @@ public class CategoryManageController {
     */
     @RequestMapping(value = "get_deep_category.do")
     @ResponseBody
-    public ServerResponse getDeepCategory(HttpSession session,@RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId,
-                                          HttpServletResponse response ,HttpServletRequest request){
+    public ServerResponse<List<Category>> getDeepCategory(HttpSession session, @RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId,
+                                                         HttpServletResponse response , HttpServletRequest request){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         // 跨域的session 保证同一性

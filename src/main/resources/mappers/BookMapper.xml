@@ -45,7 +45,7 @@
       #{bookName,jdbcType=VARCHAR}, #{bookWriter,jdbcType=VARCHAR}, #{bookTranster,jdbcType=VARCHAR}, 
       #{bookPublish,jdbcType=VARCHAR}, #{bookInfo,jdbcType=VARCHAR}, #{bookDirectory,jdbcType=VARCHAR}, 
       #{bookWriterInformation,jdbcType=VARCHAR}, #{bookImage,jdbcType=VARCHAR}, #{bookScore,jdbcType=DOUBLE},
-      #{bookStatus,jdbcType=INTEGER},#{book_down_number,jdbcType=INTEGER}, now(), now())
+      #{bookStatus,jdbcType=INTEGER},#{bookDownNumber,jdbcType=INTEGER}, now(), now())
   </insert>
   <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.Book" >
     insert into readenjoy_book
@@ -89,7 +89,7 @@
       <if test="bookStatus != null" >
         book_status,
       </if>
-      <if test="book_down_number != null" >
+      <if test="bookDownNumber != null" >
         book_down_number,
       </if>
       <if test="createTime != null" >
@@ -139,7 +139,7 @@
       <if test="bookStatus != null" >
         #{bookStatus,jdbcType=INTEGER},
       </if>
-      <if test="book_down_number != null" >
+      <if test="bookDownNumber != null" >
         book_down_number,
       </if>
       <if test="createTime != null" >
@@ -189,8 +189,8 @@
       <if test="bookStatus != null" >
         book_status = #{bookStatus,jdbcType=INTEGER},
       </if>
-      <if test="book_down_number != null" >
-        book_down_number = #{book_down_number,jdbcType=INTEGER},
+      <if test="bookDownNumber != null" >
+        book_down_number = #{bookDownNumber,jdbcType=INTEGER},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -215,7 +215,7 @@
       book_image = #{bookImage,jdbcType=VARCHAR},
       book_score = #{bookScore,jdbcType=DOUBLE},
       book_status = #{bookStatus,jdbcType=INTEGER},
-      book_down_number = #{book_down_number,jdbcType=INTEGER},
+      book_down_number = #{bookDownNumber,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = now()
     where book_id = #{bookId,jdbcType=INTEGER}
@@ -249,8 +249,12 @@
         AND b.name LIKE #{categoryName}
       </if>
   </select>
-
-
+  <!--检查书籍状态-->
+  <select id="selectBookStatus" parameterType="int" resultType="int">
+    SELECT book_status
+    FROM  readenjoy_book
+    WHERE book_id = #{bookId}
+  </select>
   <!--前台 -->
   <!--根据书籍ISBN获取书籍详细信息-->
   <select id="getBookDetail" resultMap="BaseResultMap" parameterType="string" >
@@ -264,7 +268,7 @@
     SELECT
        <include refid="Base_Column_List"/>
     FROM readenjoy_book
-    WHERE book_down_number >= 500
+    WHERE book_down_number >= 500 AND book_status = 1
     ORDER BY  book_down_number DESC LIMIT 50
   </select>
   <!--根据书名/作者/出版社/对书籍进行查询(前台)-->
@@ -278,5 +282,10 @@
      </if>
    </where>
  </select>
-
+  <!--检查书籍ISBN是否存在-->
+  <select id="checkBookIsbn" parameterType="string" resultType="int">
+    SELECT COUNT(1)
+    FROM readenjoy_book
+    WHERE book_ISBN = #{bookIsbn}
+  </select>
 </mapper>

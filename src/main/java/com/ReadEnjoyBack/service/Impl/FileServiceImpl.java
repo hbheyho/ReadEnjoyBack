@@ -1,12 +1,8 @@
 package com.ReadEnjoyBack.service.Impl;
 
 import com.ReadEnjoyBack.common.ServerResponse;
-import com.ReadEnjoyBack.dao.BookVersionMapper;
-import com.ReadEnjoyBack.dao.UserDownLoadMapper;
-import com.ReadEnjoyBack.dao.UserMapper;
-import com.ReadEnjoyBack.pojo.BookVersion;
-import com.ReadEnjoyBack.pojo.User;
-import com.ReadEnjoyBack.pojo.UserDownLoad;
+import com.ReadEnjoyBack.dao.*;
+import com.ReadEnjoyBack.pojo.*;
 import com.ReadEnjoyBack.service.IFileService;
 import com.ReadEnjoyBack.util.FTPUtil;
 import com.google.common.collect.Lists;
@@ -34,7 +30,11 @@ public class FileServiceImpl implements IFileService {
     @Autowired
     private UserDownLoadMapper userDownLoadMapper;
     @Autowired
+    private UserUploadMapper userUploadMapper;
+    @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private BookMapper bookMapper;
     // 文件上传日志
     private Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
     /*
@@ -99,6 +99,13 @@ public class FileServiceImpl implements IFileService {
             bookVersion.setDownNumber(0);
             bookVersion.setCollectNumber(0);
             bookVersionMapper.insert(bookVersion);
+            // 得到上传上传版本的版本ID
+            int bookVersionId = bookVersionMapper.getBookVersionId(uploadFileName);
+            // 进行用户上传信息传入
+            UserUpload userUpload = new UserUpload();
+            userUpload.setUserName(userName);
+            userUpload.setBookVersionId(bookVersionId);
+            userUploadMapper.insert(userUpload);
             // 上传文件到FTP服务器
             FTPUtil.uploadFile(Lists.newArrayList(targetFile),"book");
             // 删除upload中的文件
@@ -168,7 +175,7 @@ public class FileServiceImpl implements IFileService {
         // 进行文件的类型控制
         if (!StringUtils.equals(fileExtensionName,"jpg") && !StringUtils.equals(fileExtensionName,"jpeg") &&
                 !StringUtils.equals(fileExtensionName,"png") && !StringUtils.equals(fileExtensionName,"bmp") ){
-            return ServerResponse.createByErrorMessage("你上传的好像不是图片哦！");
+            return ServerResponse.createByErrorMessage("你上传的好像不是图片哦");
         }
         // 上传上传文件名
         String  uploadFileName = UUID.randomUUID().toString() + "." + fileExtensionName;
@@ -188,15 +195,83 @@ public class FileServiceImpl implements IFileService {
         try {
             // 文件上传成功
             file.transferTo(targetFile);
-            // 进行版本信息存入
             // 更新当前用户头像信息
-            int resultCount = userMapper.updateUserHeadPicByUserName(uploadFileName,userName);
+            int resultCount = userMapper.updateUserHeadPicByUserName(uploadFileName, userName);
+            if (resultCount == 0){
+                return ServerResponse.createByErrorMessage("更新用户头像信息失败");
+            }
             // 上传文件到FTP服务器
             FTPUtil.uploadFile(Lists.newArrayList(targetFile),"img");
             // 删除upload中的文件
             targetFile.delete();
         } catch (IOException e) {
             logger.error("图片上传失败！",e);
+            return ServerResponse.createByErrorMessage("图片上传失败");
+        }
+        return ServerResponse.createBySuccessMessage("上传成功");
+    }
+    /*
+     * @Author:HB
+     * @Description: 书籍封面上传
+     * @Data:21:48 2018/6/18
+     * @param file path book
+     returns:
+    */
+    @Override
+    public ServerResponse uploadBookImg(MultipartFile file, String path, Book book) {
+        // 得到文件上传的原始文件名
+        String  fileName = file.getOriginalFilename();
+        // 得到上传文件的大小/ 进行大小控制（进行转换存储）
+        String fileSize = "";
+        long fileSizeByte = file.getSize();
+        float fileSizeKB = fileSizeByte / 1024;
+        float fileSizeMB = fileSizeKB / 1024;
+        System.out.println("文件大小为：" + fileSizeMB);
+        if (fileSizeMB>1 && fileSizeMB< 5){
+            DecimalFormat fNum = new DecimalFormat("##0.00");
+            fileSize = fNum.format(fileSizeMB) + "M";
+        }else if (fileSizeMB > 5){
+            return ServerResponse.createByErrorMessage("你上传的图片有点大哦");
+        }else {
+            fileSize = fileSizeKB + "KB";
+        }
+        // 得到文件扩展名
+        String  fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
+        // 进行文件的类型控制
+        if (!StringUtils.equals(fileExtensionName,"jpg") && !StringUtils.equals(fileExtensionName,"jpeg") &&
+                !StringUtils.equals(fileExtensionName,"png") && !StringUtils.equals(fileExtensionName,"bmp") ){
+            return ServerResponse.createByErrorMessage("你上传的好像不是图片哦");
+        }
+        // 上传上传文件名
+        String  uploadFileName = UUID.randomUUID().toString() + "." + fileExtensionName;
+        logger.info("开始上传文件,上传文件名是：{}，上传路径是：{}，新文件名：{}",fileName,path,uploadFileName);
+        // 新建一个文件夹
+        File fileDir = new File(path);
+        if (!fileDir.exists()){
+            // 不存在则创建
+            // 赋予文件夹可写权限
+            fileDir.setWritable(true);
+            // 创建文件夹
+            fileDir.mkdirs();
+        }
+        // 创建文件
+        File targetFile  = new File(path,uploadFileName);
+        // 文件上传
+        try {
+            // 文件上传成功
+            file.transferTo(targetFile);
+            // 更新书籍信息
+            book.setBookImage(uploadFileName);
+            int resultCount = bookMapper.insert(book);
+            if (resultCount == 0){
+                return ServerResponse.createByErrorMessage("上传书籍封面信息失败");
+            }
+            // 上传文件到FTP服务器
+            FTPUtil.uploadFile(Lists.newArrayList(targetFile),"img");
+            // 删除upload中的文件
+            targetFile.delete();
+        } catch (IOException e) {
+            logger.error("图片上传失败",e);
             return ServerResponse.createByErrorMessage("图片上传失败");
         }
         return ServerResponse.createBySuccessMessage("上传成功");

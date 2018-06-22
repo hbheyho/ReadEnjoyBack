@@ -1,8 +1,10 @@
 package com.ReadEnjoyBack.service.Impl;
 
+import com.ReadEnjoyBack.common.Const;
 import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.dao.BookMapper;
+import com.ReadEnjoyBack.dao.BookVersionMapper;
 import com.ReadEnjoyBack.dao.CategoryMapper;
 import com.ReadEnjoyBack.pojo.Book;
 import com.ReadEnjoyBack.pojo.Category;
@@ -15,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,8 @@ public class BookServiceImpl implements IBookService {
     private BookMapper bookMapper;
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private BookVersionMapper bookVersionMapper;
 
 
 /*------------------------后台接口-------------------------------------*/
@@ -47,6 +52,7 @@ public class BookServiceImpl implements IBookService {
      returns:
     */
     public ServerResponse<String> saveOrUpdateBook(Book book){
+        System.out.println("书籍是：" + book);
         if (book.getBookIsbn() != null && book.getCategoryId() !=null && book.getBookName() != null){
             if (book.getBookId() != null){  //书籍更新操作
                 int resultCount = bookMapper.updateByPrimaryKey(book);
@@ -54,8 +60,12 @@ public class BookServiceImpl implements IBookService {
                     return ServerResponse.createBySuccessMessage("书籍更新成功！");
                 }
                 return ServerResponse.createByErrorMessage("书籍更新失败！");
-            }else {  // 进行书籍增加操作
-                int resulCount = bookMapper.insert(book);
+            }else {  // 进行书籍增加操作(因为在上次书籍封面的时候已经进行来上传 更新就可)
+                Book bookInfo = bookMapper.getBookDetail(book.getBookIsbn());
+                book.setBookId(bookInfo.getBookId());
+                book.setBookStatus(1);
+                book.setBookDownNumber(0);
+                int resulCount = bookMapper.updateByPrimaryKeySelective(book);
                 if (resulCount > 0) {
                     return ServerResponse.createBySuccessMessage("书籍新增成功！");
                 }
@@ -140,10 +150,64 @@ public class BookServiceImpl implements IBookService {
         pageInfo.setList(bookListVoList);
         return ServerResponse.createBySuccesse(pageInfo);
     }
+    /*
+     * @Author:HB
+     * @Description: 删除书籍信息
+     * @Data:19:56 2018/6/14
+     * @param bookId
+     returns:
+    */
+    @Override
+    public ServerResponse<String> deleteBook(Integer bookId) {
+        if (bookId == null){
+            return ServerResponse.createByErrorMessage("你还没选择你要删除的书籍哦");
+        }
+        int resultCount = bookMapper.deleteByPrimaryKey(bookId);
+        if (resultCount == 0){
+            return ServerResponse.createByErrorMessage("删除书籍失败");
+        }
+        return ServerResponse.createBySuccessMessage("删除成功");
+    }
+    /*
+     * @Author:HB
+     * @Description: 修改书籍状态
+     * @Data:20:01 2018/6/14
+     * @param bookId
+     returns:
+    */
+    @Override
+    public ServerResponse<String> modifyBookStatus(Integer bookId) {
+        if (bookId == null){
+            return ServerResponse.createByErrorMessage("你还没选择你要下架的书籍哦");
+        }
+        Integer bookStatus = bookMapper.selectBookStatus(bookId);
+        System.out.println("得到书籍的转台为：" + bookStatus);
+        if (bookStatus == null){
+            return ServerResponse.createByErrorMessage("找不到相应的书籍哦");
+        }
+        if (Const.BOOKSTATUS == bookStatus){  // 书籍在架 1
+            Book book = new Book();
+            book.setBookId(bookId);
+            book.setBookStatus(0);
+            int resultCount = bookMapper.updateByPrimaryKeySelective(book);
+            if (resultCount == 0){
+                return ServerResponse.createByErrorMessage("修改书籍状态失败");
+            }
+            return ServerResponse.createBySuccessMessage("修改书籍状态成功");
+        }else {  // 书籍下架
+            Book book = new Book();
+            book.setBookId(bookId);
+            book.setBookStatus(1);
+            int resultCount = bookMapper.updateByPrimaryKeySelective(book);
+            if (resultCount == 0){
+                return ServerResponse.createByErrorMessage("修改书籍状态失败");
+            }
+            return  ServerResponse.createBySuccessMessage("修改书籍状态成功");
+        }
+    }
 
 
-
-/*------------------------前台接口-------------------------------------*/
+    /*------------------------前台接口-------------------------------------*/
     /*
      * @Author:HB
      * @Description:获取书籍信息 根据下载的书籍次数
@@ -185,6 +249,24 @@ public class BookServiceImpl implements IBookService {
         }
         return ServerResponse.createBySuccesse(bookListVoList);
     }
+      /*
+       * @Author:HB
+       * @Description: 检查书籍ISBN
+       * @Data:19:12 2018/6/18
+       * @param bookIsbn
+       returns:
+      */
+    @Override
+    public ServerResponse<String> checkBookIsbn(String bookIsbn) {
+        if (bookIsbn == null){
+            return ServerResponse.createByErrorMessage("书籍ISBN不能为空");
+        }
+        int resultCount = bookMapper.checkBookIsbn(bookIsbn);
+        if (resultCount > 0){
+            return ServerResponse.createByErrorMessage("当前ISBN已存在");
+        }
+        return ServerResponse.createBySuccessMessage("检验成功");
+    }
 
 
 /*------------------------生成Vo 业务对象-------------------------------------*/
@@ -200,12 +282,21 @@ public class BookServiceImpl implements IBookService {
         bookListVo.setBookInfo(book.getBookInfo());
         bookListVo.setBookImage(book.getBookImage());
         bookListVo.setBookStatus(book.getBookStatus());
+        bookListVo.setBookTranster(book.getBookTranster());
+        bookListVo.setBookPublish(book.getBookPublish());
+        bookListVo.setBookScore(book.getBookScore());
+        bookListVo.setBookDownNumber(book.getBookDownNumber());
+        bookListVo.setCreateTime(DateTimeUtil.dateToStr(book.getCreateTime()));
+        bookListVo.setUpdateTime(DateTimeUtil.dateToStr(book.getUpdateTime()));
 
+        //得到当前用户的版本数量
+        int bookVersionNumber = bookVersionMapper.selectBookVersionNumber(book.getBookIsbn());
+        bookListVo.setBookVersionNumber(bookVersionNumber);
         // 得到所属分类的分类名
         String categoryName = categoryMapper.getCategoryName(book.getCategoryId());
         bookListVo.setBookCategoryName(categoryName);
 
-        bookListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","XXXXXX"));
+        bookListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","image.readenjoy.com"));
         return bookListVo;
     }
 
@@ -213,6 +304,7 @@ public class BookServiceImpl implements IBookService {
     private BookDetailVo assembleBookDetailVo(Book book){
         BookDetailVo bookDetailVo = new BookDetailVo();
         bookDetailVo.setBookId(book.getBookId());
+        bookDetailVo.setBookImage(book.getBookImage());
         bookDetailVo.setBookIsbn(book.getBookIsbn());
         bookDetailVo.setCategoryId(book.getCategoryId());
         bookDetailVo.setBookName(book.getBookName());
@@ -226,7 +318,7 @@ public class BookServiceImpl implements IBookService {
         bookDetailVo.setBookStatus(book.getBookStatus());
 
         // imagehost
-        bookDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","XXXX"));
+        bookDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","image.readenjoy.com"));
         // patrentCategoryId;
         Category category = categoryMapper.selectByPrimaryKey(book.getCategoryId());
         if (category == null){

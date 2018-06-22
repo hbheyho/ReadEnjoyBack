@@ -96,15 +96,15 @@ public class CategoryServiceImpl  implements ICategoryService{
      returns:com.ReadEnjoyBack.common.ServerResponse
      */
     @Override
-    public ServerResponse<List<Integer>> getDeepChildrenParallelCategory(Integer categoryId){
+    public ServerResponse<List<Category>> getDeepChildrenParallelCategory(Integer categoryId){
         Set<Category> categorySet = Sets.newHashSet();
         findChildDeep(categorySet,categoryId);
 
 
-        List<Integer> categoryIdList = Lists.newArrayList();
+        List<Category> categoryIdList = Lists.newArrayList();
         if(categoryId != null){
             for(Category categoryItem : categorySet){
-                categoryIdList.add(categoryItem.getId());
+                categoryIdList.add(categoryItem);
             }
         }
         return ServerResponse.createBySuccesse(categoryIdList);

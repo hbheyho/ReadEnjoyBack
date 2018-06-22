@@ -10,6 +10,8 @@ public class Const {
 
     public static final String EMAIL = "email";
     public static final String USERNAME = "username";
+    public static final int BOOKSTATUS = 1; //书籍在架
+    public static final int USERSTATUS = 1; //书籍在架
 
     /*定义一个用户权限类*/
     public interface Role{

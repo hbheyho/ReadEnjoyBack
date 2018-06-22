@@ -23,10 +23,14 @@ public interface IBookService {
     ServerResponse<PageInfo> getBookList(int pageNum, int pageSize);
     /*书籍搜索*/
     ServerResponse<PageInfo> searchBook(int pageNum, int pageSize ,String bookName, String bookWriter,String publishName,String categoryName);
-
+    /*删除书籍*/
+    ServerResponse<String> deleteBook(Integer bookId);
+    /*修改书籍状态*/
+    ServerResponse<String> modifyBookStatus(Integer bookId);
     /*---------------前台--------------------*/
     /*获取书籍信息 根据下载的书籍次数*/
     ServerResponse<List<BookListVo>> getBookByDownNumber();
     /*数据搜索 （根据书名/ 书籍作者/ 书籍出版社*/
     ServerResponse<List<BookListVo>> searchBookByBookNameAndBookWriterAndPublish(String conditionName);
+    ServerResponse<String> checkBookIsbn(String bookIsbn);
 }

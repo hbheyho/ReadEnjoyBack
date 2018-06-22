@@ -7,6 +7,9 @@ import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.service.IBookVersionService;
 import com.ReadEnjoyBack.service.IFileService;
 import com.ReadEnjoyBack.vo.BookVersionVO;
+import com.ReadEnjoyBack.vo.UserOperationVo;
+import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -108,6 +111,78 @@ public class BookVersionController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         return iBookVersionService.getBookVersionList(bookISBN);
+    }
+    /*
+   * @Author:HB
+   * @Description: 得到当前登录用户的收藏书籍信息
+   * @Data:8:25 2018/6/11
+   * @param
+   returns:
+  */
+    @RequestMapping(value = "get_user_collection.do")
+    @ResponseBody
+    ServerResponse<PageInfo> getUserCollectInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                                @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                                @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
+        }
+        // 得到当前用户名
+        String userName = user.getUsername();
+        return iBookVersionService.getUserCollection(userName,pageNum,pageSize);
+    }
+    /*
+  * @Author:HB
+  * @Description: 得到当前登录用户的上传书籍信息
+  * @Data:8:25 2018/6/11
+  * @param
+  returns:
+ */
+    @RequestMapping(value = "get_user_upload.do")
+    @ResponseBody
+    ServerResponse<PageInfo> getUserUploadInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                                            @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                                            @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
+        }
+        // 得到当前用户名
+        String userName = user.getUsername();
+        return iBookVersionService.getUserUploadInfo(userName,pageNum,pageSize);
+    }
+    /*
+    * @Author:HB
+    * @Description: 得到当前登录用户的上传书籍信息
+    * @Data:8:25 2018/6/11
+    * @param
+    returns:
+    */
+    @RequestMapping(value = "get_user_download.do")
+    @ResponseBody
+    ServerResponse<PageInfo> getUserDownloadInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                                              @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                                              @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
+        }
+        // 得到当前用户名
+        String userName = user.getUsername();
+        return iBookVersionService.getUserDownloadInfo(userName,pageNum,pageSize);
     }
 
 }

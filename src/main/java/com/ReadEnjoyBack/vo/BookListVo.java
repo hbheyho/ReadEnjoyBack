@@ -16,7 +16,71 @@ public class BookListVo {
     private String bookImage;
     private Integer bookStatus;
 
+    private String bookTranster;
+    private String bookPublish;
+    private Double bookScore;
+    private String createTime;
+    private String updateTime;
+    private Integer bookDownNumber;
+    private Integer bookVersionNumber;
+
     private String imageHost; // 图片服务器url前缀
+
+    public String getBookTranster() {
+        return bookTranster;
+    }
+
+    public void setBookTranster(String bookTranster) {
+        this.bookTranster = bookTranster;
+    }
+
+    public String getBookPublish() {
+        return bookPublish;
+    }
+
+    public void setBookPublish(String bookPublish) {
+        this.bookPublish = bookPublish;
+    }
+
+    public Double getBookScore() {
+        return bookScore;
+    }
+
+    public void setBookScore(Double bookScore) {
+        this.bookScore = bookScore;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Integer getBookDownNumber() {
+        return bookDownNumber;
+    }
+
+    public void setBookDownNumber(Integer bookDownNumber) {
+        this.bookDownNumber = bookDownNumber;
+    }
+
+    public Integer getBookVersionNumber() {
+        return bookVersionNumber;
+    }
+
+    public void setBookVersionNumber(Integer bookVersionNumber) {
+        this.bookVersionNumber = bookVersionNumber;
+    }
 
     public Integer getBookId() {
         return bookId;

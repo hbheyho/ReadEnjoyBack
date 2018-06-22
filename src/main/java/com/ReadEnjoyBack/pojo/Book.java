@@ -54,6 +54,28 @@ public class Book {
         this.updateTime = updateTime;
     }
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", bookIsbn='" + bookIsbn + '\'' +
+                ", categoryId=" + categoryId +
+                ", bookName='" + bookName + '\'' +
+                ", bookWriter='" + bookWriter + '\'' +
+                ", bookTranster='" + bookTranster + '\'' +
+                ", bookPublish='" + bookPublish + '\'' +
+                ", bookInfo='" + bookInfo + '\'' +
+                ", bookDirectory='" + bookDirectory + '\'' +
+                ", bookWriterInformation='" + bookWriterInformation + '\'' +
+                ", bookImage='" + bookImage + '\'' +
+                ", bookScore=" + bookScore +
+                ", bookStatus=" + bookStatus +
+                ", bookDownNumber=" + bookDownNumber +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
+
     public Book() {
         super();
     }
@@ -71,7 +93,7 @@ public class Book {
     }
 
     public void setBookIsbn(String bookIsbn) {
-        this.bookIsbn = bookIsbn == null ? null : bookIsbn.trim();
+        this.bookIsbn = bookIsbn;
     }
 
     public Integer getCategoryId() {
@@ -87,7 +109,7 @@ public class Book {
     }
 
     public void setBookName(String bookName) {
-        this.bookName = bookName == null ? null : bookName.trim();
+        this.bookName = bookName;
     }
 
     public String getBookWriter() {
@@ -95,7 +117,7 @@ public class Book {
     }
 
     public void setBookWriter(String bookWriter) {
-        this.bookWriter = bookWriter == null ? null : bookWriter.trim();
+        this.bookWriter = bookWriter;
     }
 
     public String getBookTranster() {
@@ -103,7 +125,7 @@ public class Book {
     }
 
     public void setBookTranster(String bookTranster) {
-        this.bookTranster = bookTranster == null ? null : bookTranster.trim();
+        this.bookTranster = bookTranster;
     }
 
     public String getBookPublish() {
@@ -111,7 +133,7 @@ public class Book {
     }
 
     public void setBookPublish(String bookPublish) {
-        this.bookPublish = bookPublish == null ? null : bookPublish.trim();
+        this.bookPublish = bookPublish;
     }
 
     public String getBookInfo() {
@@ -119,7 +141,7 @@ public class Book {
     }
 
     public void setBookInfo(String bookInfo) {
-        this.bookInfo = bookInfo == null ? null : bookInfo.trim();
+        this.bookInfo = bookInfo;
     }
 
     public String getBookDirectory() {
@@ -127,7 +149,7 @@ public class Book {
     }
 
     public void setBookDirectory(String bookDirectory) {
-        this.bookDirectory = bookDirectory == null ? null : bookDirectory.trim();
+        this.bookDirectory = bookDirectory;
     }
 
     public String getBookWriterInformation() {
@@ -135,7 +157,7 @@ public class Book {
     }
 
     public void setBookWriterInformation(String bookWriterInformation) {
-        this.bookWriterInformation = bookWriterInformation == null ? null : bookWriterInformation.trim();
+        this.bookWriterInformation = bookWriterInformation;
     }
 
     public String getBookImage() {
@@ -143,7 +165,7 @@ public class Book {
     }
 
     public void setBookImage(String bookImage) {
-        this.bookImage = bookImage == null ? null : bookImage.trim();
+        this.bookImage = bookImage;
     }
 
     public Double getBookScore() {

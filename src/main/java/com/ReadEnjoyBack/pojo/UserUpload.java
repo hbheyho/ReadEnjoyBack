@@ -1,34 +1,28 @@
 package com.ReadEnjoyBack.pojo;
 
-import java.util.Date;
-
-public class UserCollection {
+public class UserUpload {
     private Integer id;
 
     private String userName;
 
     private Integer bookVersionId;
 
-    private Date collectTime;
-
-    public UserCollection(Integer id, String userName, Integer bookVersionId, Date collectTime) {
+    public UserUpload(Integer id, String userName, Integer bookVersionId) {
         this.id = id;
         this.userName = userName;
         this.bookVersionId = bookVersionId;
-        this.collectTime = collectTime;
     }
 
     @Override
     public String toString() {
-        return "UserCollectionVo{" +
+        return "UserUpload{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
-                ", bookVersionId=" + bookVersionId +
-                ", collectTime=" + collectTime +
+                ", bookVersionId='" + bookVersionId + '\'' +
                 '}';
     }
 
-    public UserCollection() {
+    public UserUpload() {
         super();
     }
 
@@ -54,13 +48,5 @@ public class UserCollection {
 
     public void setBookVersionId(Integer bookVersionId) {
         this.bookVersionId = bookVersionId;
-    }
-
-    public Date getCollectTime() {
-        return collectTime;
-    }
-
-    public void setCollectTime(Date collectTime) {
-        this.collectTime = collectTime;
     }
 }
