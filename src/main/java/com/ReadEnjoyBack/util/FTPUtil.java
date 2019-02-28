@@ -1,5 +1,6 @@
 package com.ReadEnjoyBack.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
@@ -37,11 +38,19 @@ public class FTPUtil {
     // 文件上传（返回Boolean 类型 true为成功 false 为失败 对外暴露接口）
     public static boolean uploadFile(List<File> fileList,String remotePath) throws IOException {
         // FTP服务器数据初始化
-        logger.info("上传的文件是：{}",fileList );
         FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
         logger.info("开始连接FTP服务器！{},{},{},{}",ftpUtil.user,ftpUtil.port,ftpUtil.pwd,ftpUtil.ip);
         boolean result = ftpUtil.uploadFile(remotePath,fileList);
         logger.info("结束上传，上传结果时：{}",result);
+
+        // 进行文件的格式转换(若是mobi类型和equb类型就不转化)
+        String extentName = fileList.get(0).toString().
+                substring(fileList.get(0).toString().lastIndexOf(".") + 1);
+        if (!StringUtils.equals(extentName,"mobi") && !StringUtils.equals(extentName,"epub")){
+            convertFileUtil convertFile = new convertFileUtil(fileList.get(0).toString());
+            //调用conver方法开始转换，先执行doc2pdf()将office文件转换为pdf;再执行pdf2swf()将pdf转换为swf;
+            convertFile.conver();
+        }
         return result;
     }
 
@@ -89,7 +98,7 @@ public class FTPUtil {
         }
         return uploaded;
     }
-    // 文件系在（具体实现 不对外暴露）  remotePath 下载的远程文件夹
+    // 文件下载（具体实现 不对外暴露）  remotePath 下载的远程文件夹
     private byte[] downloadFile(String remotePath,String fileName) throws IOException {
         BufferedInputStream in = null; // 设置缓存 提升读取速度
         ByteArrayOutputStream out = null;  // 字节数组输出流

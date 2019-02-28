@@ -186,7 +186,7 @@
   </update>
 <!--得到当前登录用户的收藏书籍信息-->
   <select id="selectUserCollection" parameterType="string" resultMap="bookVersionWithUsercollect">
-     SELECT a.book_ISBN, a.book_size, a.book_originName ,b.id,b.collect_time
+     SELECT a.book_ISBN, a.book_size, a.book_originName ,b.id,b.book_version_ID,b.collect_time
      FROM readenjoy_bookversion a,readenjoy_usercollection b
      WHERE a.id=b.book_version_ID  AND b.user_name = #{username}
      ORDER BY b.id DESC
@@ -200,6 +200,7 @@
     <collection property="userCollectionList" ofType="com.ReadEnjoyBack.pojo.UserCollection">
       <id property="id" column="id"></id>
       <result property="collectTime" column="collect_time"></result>
+      <result property="bookVersionId" column="book_version_ID"></result>
     </collection>
   </resultMap>
   <!--得到当前登录用户的上传书籍信息-->
@@ -237,9 +238,18 @@
       <result property="downTime" column="down_time"></result>
     </collection>
   </resultMap>
+
+  <!--根据实际ISBN获得当前书籍的版本数量-->
   <select id="selectBookVersionNumber" parameterType="string" resultType="int">
     SELECT COUNT(1)
     FROM readenjoy_bookversion
     WHERE book_ISBN = #{bookISBN}
+  </select>
+
+ <!-- 根据版本id得到上传者-->
+  <select id="selectUploadUserNameById" parameterType="int" resultType="string">
+   SELECT upload_user
+   FROM readenjoy_bookversion
+   WHERE id = #{bookVersionId}
   </select>
 </mapper>

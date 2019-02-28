@@ -2,10 +2,13 @@ package com.ReadEnjoyBack.controller.portal;
 
 import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
+import com.ReadEnjoyBack.pojo.Comments;
 import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.service.IFileService;
 import com.ReadEnjoyBack.service.IUserService;
 import com.ReadEnjoyBack.common.Const;
+import com.ReadEnjoyBack.util.CookieUtils;
+import com.ReadEnjoyBack.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
-import javax.xml.ws.spi.http.HttpContext;
 import java.util.List;
+/*import javax.servlet.http.HttpSessionContext;
+import javax.xml.ws.spi.http.HttpContext;
+import java.util.List;*/
 
 /**
  * @Author:HB
@@ -44,14 +49,20 @@ public class UserController {
      */
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login(String email, String password, HttpSession session, HttpServletResponse response,
+    public ServerResponse<User> login(String email, String password,@RequestParam(required = false) String agree, HttpSession session, HttpServletResponse response,
                                       HttpServletRequest request){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         // 跨域保证session 同一性
         response.addHeader("Access-Control-Allow-Credentials","true");
-        ServerResponse<User> responseInfo = iUserService.login(email,password);
+        String MD5Password = MD5Util.MD5EncodeUtf8(password);
+        ServerResponse<User> responseInfo = iUserService.login(email,MD5Password);
         if (responseInfo.isSuccess()){
+            // 勾选了自动登录
+            if (agree.equals("agree")){
+                String remember_me = email + "-" + MD5Util.MD5EncodeUtf8(password);
+                CookieUtils.addCookie(response,"remember_me",remember_me,null);
+            }
            session.setAttribute(Const.CURRENT_USER,responseInfo.getData());
         }
         return responseInfo;
@@ -71,7 +82,8 @@ public class UserController {
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         // 跨域保证session 同一性
         response.addHeader("Access-Control-Allow-Credentials","true");
-       session.removeAttribute(Const.CURRENT_USER);
+        session.removeAttribute(Const.CURRENT_USER); // 结束当前会话
+        CookieUtils.delCookie(request,response,"remember_me"); //删除记住我cookie
         return ServerResponse.createBySuccessMessage("用户退出成功！");
     }
 
@@ -214,7 +226,6 @@ public class UserController {
         if (currentUser == null){
             return ServerResponse.createByErrorMessage("用户暂未登录");
         }
-        System.out.println(user);
         user.setId(currentUser.getId());
         ServerResponse<User> responseInfo = iUserService.updateInformation(user);
         if (responseInfo.isSuccess()){
@@ -273,4 +284,118 @@ public class UserController {
         fileMap.put("url",url);*/
         /*return ServerResponse.createBySuccesse(fileMap);*/
     }
+    /*
+     * @Author:HB
+     * @Description: 邮箱验证
+     * @Data:17:23 2019/1/16
+     * @param email
+      returns: Token
+    */
+    @RequestMapping(value = "validateEmail.do")
+    @ResponseBody
+    public ServerResponse<String> sendEmailToValidate(@RequestParam String email,@RequestParam int code , HttpServletRequest request,HttpServletResponse response){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        return iUserService.sendEmailToValidate(email,code);
+    }
+    
+    /*
+     * @Author:HB
+     * @Description: Token验证
+     * @Data:17:51 2019/1/16
+     * @param null
+     returns:
+    */
+    @RequestMapping(value = "validateEmailByToken.do")
+    @ResponseBody
+    public ServerResponse<String> sendTokenToValidate(@RequestParam String email,@RequestParam String Token,HttpServletRequest  request,
+                                                      HttpServletResponse response){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        return iUserService.sendTokenToValidate(email,Token);
+    }
+
+    /*
+     * @Author:HB
+     * @Description: 得到用户当前状态
+     * @Data:17:51 2019/1/16
+     * @param email
+     returns:
+    */
+    @RequestMapping(value = "getUserStatus.do")
+    @ResponseBody
+    public ServerResponse<String> getUserStatus(@RequestParam String email,HttpServletRequest  request,
+                                                      HttpServletResponse response){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        return iUserService.getUserStatus(email);
+    }
+
+    /*
+     * @Author:HB
+     * @Description: 得到用户的所有评论信息
+     * @Data:17:51 2019/1/16
+     * @param email
+     returns:
+    */
+    @RequestMapping(value = "get_User_AllComments.do")
+    @ResponseBody
+    public ServerResponse<List<Comments>> getUserAllComments(HttpSession session, HttpServletRequest  request, HttpServletResponse response){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorMessage("用户未登录，登录之后在进行操作噢！");
+        }
+        String email = user.getEmail();
+        return iUserService.getUserAllComments(email);
+    }
+        /* * @Author:HB
+         * @Description: 删除评论信息
+         * @Data:17:51 2019/1/16
+         * @param email
+         returns:*/
+    @RequestMapping(value = "delete_User_Comments.do")
+    @ResponseBody
+    public ServerResponse<String> deleteUserComments(@RequestParam(value = "commentId") int commentId, HttpSession session,
+                                                     HttpServletRequest  request, HttpServletResponse response){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
+        }
+        String email = user.getEmail();
+        return iUserService.deleteUserComments(commentId);
+    }
+    /*
+     * @Author:HB
+     * @Description: 用户反馈信息插入
+     * @Data:21:28 2019/2/26
+     * @param feedbackInfo feedbackName
+     returns:
+    */
+    @RequestMapping(value = "user_feedback.do")
+    @ResponseBody
+    public ServerResponse<String> feedBackDo(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                             @RequestParam(value = "feedbackName") String feedbackName,
+                                             @RequestParam(value = "feedbackInfo") String feedbackInfo){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        String userName; // 若用户登录 则用户名 不然则游客
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            userName = "游客";
+        }else {
+            userName = user.getUsername();
+        }
+        return iUserService.feedbackDo(userName,feedbackInfo,feedbackName);
+    }
+
 }

@@ -267,6 +267,40 @@ public class BookServiceImpl implements IBookService {
         }
         return ServerResponse.createBySuccessMessage("检验成功");
     }
+    /*
+     * @Author:HB
+     * @Description: 分类信息搜索通过categoryId
+     * @Data:14:53 2019/1/24
+     * @param  categoryId,  pageNum,  pageSize
+     returns:
+    */
+    @Override
+    public ServerResponse<PageInfo> getBookListByCategoryId(int categoryId, int pageNum, int pageSize) {
+        List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
+        int parentId;
+        List<Book> bookList;
+        // 开始分页
+        PageHelper.startPage(pageNum,pageSize);
+        // 填充自己sql逻辑
+        // 判断是否是parentID, 若是找到其孩子 再进行相应查询
+        if (categoryList.size() > 0){  // 代表当前要查询的categoryId是父节点
+            parentId = categoryId;
+            categoryId = 0;
+            bookList = bookMapper.selectBookListByCategoryId(parentId,categoryId);
+        }else{  // 直接查询既可
+            parentId = 0;
+            bookList = bookMapper.selectBookListByCategoryId(parentId,categoryId);
+        }
+        List<BookListVo> bookListVoList = new ArrayList<BookListVo>();
+        for (Book bookItem: bookList){
+            BookListVo bookListVo = assembleBookListVo(bookItem);
+            bookListVoList.add(bookListVo);
+        }
+        // pageHelper收尾
+        PageInfo pageInfo = new PageInfo(bookList); // 对集合进行自动的分页处理
+        pageInfo.setList(bookListVoList); // 控制前台展示的内容 对list进行重置
+        return ServerResponse.createBySuccesse(pageInfo);
+    }
 
 
 /*------------------------生成Vo 业务对象-------------------------------------*/
@@ -289,14 +323,14 @@ public class BookServiceImpl implements IBookService {
         bookListVo.setCreateTime(DateTimeUtil.dateToStr(book.getCreateTime()));
         bookListVo.setUpdateTime(DateTimeUtil.dateToStr(book.getUpdateTime()));
 
-        //得到当前用户的版本数量
+        //得到当前书籍的版本数量
         int bookVersionNumber = bookVersionMapper.selectBookVersionNumber(book.getBookIsbn());
         bookListVo.setBookVersionNumber(bookVersionNumber);
         // 得到所属分类的分类名
         String categoryName = categoryMapper.getCategoryName(book.getCategoryId());
         bookListVo.setBookCategoryName(categoryName);
 
-        bookListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","image.readenjoy.com"));
+        bookListVo.setImageHost(PropertiesUtil.getProperty("bookImage.server","bookImage.readenjoy.com"));
         return bookListVo;
     }
 
@@ -318,13 +352,14 @@ public class BookServiceImpl implements IBookService {
         bookDetailVo.setBookStatus(book.getBookStatus());
 
         // imagehost
-        bookDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","image.readenjoy.com"));
-        // patrentCategoryId;
+        bookDetailVo.setImageHost(PropertiesUtil.getProperty("bookImage.server","bookImage.readenjoy.com"));
+        // patrentCategoryId and categoryName;
         Category category = categoryMapper.selectByPrimaryKey(book.getCategoryId());
         if (category == null){
            bookDetailVo.setParentCategoryId(0);
         }else {
            bookDetailVo.setParentCategoryId(category.getParentId());
+           bookDetailVo.setCategoryName(category.getName());
         }
         //createTime
         bookDetailVo.setCreateTime(DateTimeUtil.dateToStr(book.getCreateTime()));

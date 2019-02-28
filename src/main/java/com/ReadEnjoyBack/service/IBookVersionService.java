@@ -21,11 +21,17 @@ public interface IBookVersionService {
     ServerResponse<List<BookVersionVO>> getBookVersionList(String bookISBN);
     /*存储用户的收藏信息*/
     ServerResponse inserCollectionInfo(Integer bookVersionId,String username);
-    /*得到当前登录用户的收藏书籍信息*/
+    /*得到当前登录用户的收藏书籍信息---1 不分类*/
+    ServerResponse getUserCollectionNotPage(String userName);
+    /*得到当前登录用户的收藏书籍信息--- 2 分类*/
     ServerResponse<PageInfo> getUserCollection(String username, int pageNum, int pageSize);
     /*得到当前登录用户的上传书籍信息*/
     ServerResponse<PageInfo> getUserUploadInfo(String username,int pageNum,int pageSize);
     /*得到当前登录用户的下载书籍信息*/
     ServerResponse<PageInfo> getUserDownloadInfo(String username,int pageNum,int pageSize);
+    /*插入用户评论信息*/
+    ServerResponse insertComments(String userEmail,int bookVersion, String bookIsbn, String commentInfo);
+    /*书籍版本举报*/
+    ServerResponse<String> reportBookVersion(String userName,int bookVersionId,String reason);
 
 }

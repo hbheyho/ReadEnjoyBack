@@ -26,6 +26,7 @@ public class BookDetailVo {
 
     private String imageHost; // 图片服务器url前缀
     private Integer parentCategoryId;  // 父分类Id
+    private String  categoryName; // 属于的category名字
 
     public Integer getBookId() {
         return bookId;
@@ -161,5 +162,13 @@ public class BookDetailVo {
 
     public void setParentCategoryId(Integer parentCategoryId) {
         this.parentCategoryId = parentCategoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

@@ -34,7 +34,14 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-
+    <!--定义一个拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--将拦截user所有请求-->
+            <mvc:mapping path="/user/*"/>
+            <bean class="com.ReadEnjoyBack.interceptor.LoginInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
 
     <!-- 文件上传 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

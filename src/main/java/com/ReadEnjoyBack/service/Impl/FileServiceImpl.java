@@ -53,7 +53,6 @@ public class FileServiceImpl implements IFileService {
         long fileSizeByte = file.getSize();
         float fileSizeKB = fileSizeByte / 1024;
         float fileSizeMB = fileSizeKB / 1024;
-        System.out.println("文件大小为：" + fileSizeMB);
         if (fileSizeMB>1 && fileSizeMB<10){
             DecimalFormat fNum = new DecimalFormat("##0.00");
             fileSize = fNum.format(fileSizeMB) + "M";
@@ -62,7 +61,6 @@ public class FileServiceImpl implements IFileService {
         }else {
              fileSize = fileSizeKB + "KB";
         }
-        System.out.println("文件大小是：" + fileSize);
         // 得到文件扩展名
         String  fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
         // 进行文件的类型控制
@@ -101,19 +99,19 @@ public class FileServiceImpl implements IFileService {
             bookVersionMapper.insert(bookVersion);
             // 得到上传上传版本的版本ID
             int bookVersionId = bookVersionMapper.getBookVersionId(uploadFileName);
-            // 进行用户上传信息传入
+            // 进行用户上传信息录入
             UserUpload userUpload = new UserUpload();
             userUpload.setUserName(userName);
             userUpload.setBookVersionId(bookVersionId);
             userUploadMapper.insert(userUpload);
             // 上传文件到FTP服务器
             FTPUtil.uploadFile(Lists.newArrayList(targetFile),"book");
-            // 删除upload中的文件
-            targetFile.delete();
         } catch (IOException e) {
             logger.error("文件上传失败！",e);
             return null;
         }
+        // 删除upload中的上传文件
+        targetFile.delete();
         return ServerResponse.createBySuccessMessage("上传成功！");
     }
     /*

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ReadEnjoyBack.dao.WriterMapper" >
+  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.Writer" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="writer_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="writer_birth" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="writer_info" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="writer_image" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="enter_time" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="writer_from" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, writer_name, writer_birth, writer_info, writer_image, enter_time, writer_from, 
+    create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from readenjoy_writer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from readenjoy_writer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.Writer" >
+    insert into readenjoy_writer (id, writer_name, writer_birth, 
+      writer_info, writer_image, enter_time, 
+      writer_from, create_time, update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{writerName,jdbcType=VARCHAR}, #{writerBirth,jdbcType=VARCHAR}, 
+      #{writerInfo,jdbcType=VARCHAR}, #{writerImage,jdbcType=VARCHAR}, #{enterTime,jdbcType=VARCHAR},
+      #{writerFrom,jdbcType=VARCHAR}, now(), now())}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.Writer" >
+    insert into readenjoy_writer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="writerName != null" >
+        writer_name,
+      </if>
+      <if test="writerBirth != null" >
+        writer_birth,
+      </if>
+      <if test="writerInfo != null" >
+        writer_info,
+      </if>
+      <if test="writerImage != null" >
+        writer_image,
+      </if>
+      <if test="enterTime != null" >
+        enter_time,
+      </if>
+      <if test="writerFrom != null" >
+        writer_from,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="writerName != null" >
+        #{writerName,jdbcType=VARCHAR},
+      </if>
+      <if test="writerBirth != null" >
+        #{writerBirth,jdbcType=VARCHAR},
+      </if>
+      <if test="writerInfo != null" >
+        #{writerInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="writerImage != null" >
+        #{writerImage,jdbcType=VARCHAR},
+      </if>
+      <if test="enterTime != null" >
+        #{enterTime,jdbcType=VARCHAR},
+      </if>
+      <if test="writerFrom != null" >
+        #{writerFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+       now(),
+      </if>
+      <if test="updateTime != null" >
+       now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.Writer" >
+    update readenjoy_writer
+    <set >
+      <if test="writerName != null" >
+        writer_name = #{writerName,jdbcType=VARCHAR},
+      </if>
+      <if test="writerBirth != null" >
+        writer_birth = #{writerBirth,jdbcType=VARCHAR},
+      </if>
+      <if test="writerInfo != null" >
+        writer_info = #{writerInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="writerImage != null" >
+        writer_image = #{writerImage,jdbcType=VARCHAR},
+      </if>
+      <if test="enterTime != null" >
+        enter_time = #{enterTime,jdbcType=VARCHAR},
+      </if>
+      <if test="writerFrom != null" >
+        writer_from = #{writerFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = now(),
+      </if>
+      <if test="updateTime != null" >
+        update_time = now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.Writer" >
+    update readenjoy_writer
+    set writer_name = #{writerName,jdbcType=VARCHAR},
+      writer_birth = #{writerBirth,jdbcType=VARCHAR},
+      writer_info = #{writerInfo,jdbcType=VARCHAR},
+      writer_image = #{writerImage,jdbcType=VARCHAR},
+      enter_time = #{enterTime,jdbcType=VARCHAR},
+      writer_from = #{writerFrom,jdbcType=VARCHAR},
+      create_time = now(),
+      update_time = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--得到作者信息根据年份-->
+  <select id="SelectWriterByYear" parameterType="int" resultMap="BaseResultMap">
+    SELECT *
+    FROM readenjoy_writer
+    WHERE enter_time = #{year}
+  </select>
+</mapper>

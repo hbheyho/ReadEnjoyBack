@@ -81,4 +81,11 @@
       collect_time = #{collectTime,jdbcType=TIMESTAMP}
     where id = now()
   </update>
+
+  <!--判断当前书籍版本是否被用户收藏-->
+  <select id="isCollection" parameterType="map" resultType="int">
+   SELECT COUNT(1)
+   FROM  readenjoy_usercollection
+   WHERE user_name = #{userName} AND book_version_ID = #{bookVersionId}
+  </select>
 </mapper>

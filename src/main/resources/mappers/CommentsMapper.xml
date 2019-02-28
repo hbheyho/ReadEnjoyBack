@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ReadEnjoyBack.dao.CommentsMapper" >
+  <resultMap id="BaseResultMap" type="com.ReadEnjoyBack.pojo.Comments" >
+    <constructor >
+      <idArg column="CId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_email" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="book_version" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="book_ISBN" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="comment_info" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="comment_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="comment_mark" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CId, user_email, book_version, book_ISBN, comment_info, comment_time, comment_mark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from readenjoy_comments
+    where CId = #{cid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from readenjoy_comments
+    where CId = #{cid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.Comments" >
+    insert into readenjoy_comments (CId, user_email, book_version, 
+      book_ISBN, comment_info, comment_time, 
+      comment_mark)
+    values (#{cid,jdbcType=INTEGER}, #{userEmail,jdbcType=VARCHAR}, #{bookVersion,jdbcType=INTEGER}, 
+      #{bookIsbn,jdbcType=VARCHAR}, #{commentInfo,jdbcType=VARCHAR}, now(),
+      #{commentMark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.Comments" >
+    insert into readenjoy_comments
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cid != null" >
+        CId,
+      </if>
+      <if test="userEmail != null" >
+        user_email,
+      </if>
+      <if test="bookVersion != null" >
+        book_version,
+      </if>
+      <if test="bookIsbn != null" >
+        book_ISBN,
+      </if>
+      <if test="commentInfo != null" >
+        comment_info,
+      </if>
+      <if test="commentTime != null" >
+        comment_time,
+      </if>
+      <if test="commentMark != null" >
+        comment_mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cid != null" >
+        #{cid,jdbcType=INTEGER},
+      </if>
+      <if test="userEmail != null" >
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="bookVersion != null" >
+        #{bookVersion,jdbcType=INTEGER},
+      </if>
+      <if test="bookIsbn != null" >
+        #{bookIsbn,jdbcType=VARCHAR},
+      </if>
+      <if test="commentInfo != null" >
+        #{commentInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="commentTime != null" >
+        now(),
+      </if>
+      <if test="commentMark != null" >
+        #{commentMark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ReadEnjoyBack.pojo.Comments" >
+    update readenjoy_comments
+    <set >
+      <if test="userEmail != null" >
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="bookVersion != null" >
+        book_version = #{bookVersion,jdbcType=INTEGER},
+      </if>
+      <if test="bookIsbn != null" >
+        book_ISBN = #{bookIsbn,jdbcType=VARCHAR},
+      </if>
+      <if test="commentInfo != null" >
+        comment_info = #{commentInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="commentTime != null" >
+        comment_time = now(),
+      </if>
+      <if test="commentMark != null" >
+        comment_mark = #{commentMark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CId = #{cid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ReadEnjoyBack.pojo.Comments" >
+    update readenjoy_comments
+    set user_email = #{userEmail,jdbcType=VARCHAR},
+      book_version = #{bookVersion,jdbcType=INTEGER},
+      book_ISBN = #{bookIsbn,jdbcType=VARCHAR},
+      comment_info = #{commentInfo,jdbcType=VARCHAR},
+      comment_time = now(),
+      comment_mark = #{commentMark,jdbcType=VARCHAR}
+    where CId = #{cid,jdbcType=INTEGER}
+  </update>
+
+  <!--根据version查询相应评论信息-->
+  <select id="getCommentInfo" parameterType="int" resultMap="bookVersionComment">
+  SELECT
+      a.id,a.username,a.headPic,b.CId,b.user_email,
+      b.book_version,b.book_ISBN,b.comment_info,
+      b.comment_time,b.comment_mark
+  FROM
+    readenjoy_user a,
+    readenjoy_comments b
+  WHERE a.email = b.user_email AND b.book_version = #{versionId}
+  ORDER BY b.CId DESC
+  </select>
+  <resultMap id="bookVersionComment" type="com.ReadEnjoyBack.pojo.Comments">
+    <id property="cid" column="CId"></id>
+    <result property="userEmail" column="user_email"></result>
+    <result property="bookVersion" column="book_version"></result>
+    <result property="bookIsbn" column="book_ISBN"></result>
+    <result property="commentInfo" column="comment_info"></result>
+    <result property="commentTime" column="comment_time"></result>
+    <result property="commentMark" column="comment_mark"></result>
+    <collection property="userList" ofType="com.ReadEnjoyBack.pojo.User">
+      <id property="id" column="id"></id>
+      <result property="username" column="username"></result>
+      <result property="headpic" column="headPic"></result>
+    </collection>
+  </resultMap>
+
+  <!--得到当前用户的评论信息-->
+  <select id="getUserAllComments" parameterType="string" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM readenjoy_comments
+    WHERE user_email = #{email}
+  </select>
+</mapper>

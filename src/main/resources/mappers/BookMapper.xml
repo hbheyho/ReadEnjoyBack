@@ -269,7 +269,7 @@
        <include refid="Base_Column_List"/>
     FROM readenjoy_book
     WHERE book_down_number >= 500 AND book_status = 1
-    ORDER BY  book_down_number DESC LIMIT 50
+    ORDER BY  book_down_number DESC LIMIT 0,50
   </select>
   <!--根据书名/作者/出版社/对书籍进行查询(前台)-->
  <select id="selectBookByBookNameOrBookWriterOrPublicNameFront"  parameterType="string" resultMap="BaseResultMap">
@@ -287,5 +287,18 @@
     SELECT COUNT(1)
     FROM readenjoy_book
     WHERE book_ISBN = #{bookIsbn}
+  </select>
+
+
+  <select id="selectBookListByCategoryId" parameterType="map" resultMap="BaseResultMap">
+    SELECT   <include refid="Base_Column_List"/>
+     FROM readenjoy_book
+    WHERE 1=1
+    <if test="parentId != 0">
+     AND category_id in (SELECT id FROM readenjoy_bookcategory WHERE parent_id = #{parentId})
+    </if>
+    <if test="categoryId != 0">
+      AND category_id = #{categoryId}
+    </if>
   </select>
 </mapper>

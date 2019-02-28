@@ -33,7 +33,7 @@ public class CategoryManageController {
     private IUserService iUserService;
     /*
      * @Author:HB
-     * @Description: 增加分类
+     * @Description: 增加分类(若没有parentId 默认为顶级分类)
      * @Data:10:50 2018/5/24
      * @param parentId
     * @param categoryName
@@ -96,7 +96,7 @@ public class CategoryManageController {
     }
     /*
       * @Author:HB
-      * @Description: 获取当前分类的子节点(平级)
+      * @Description: 获取当前分类的子节点(平级 不递归查询)
       * @Data:14:34 2018/5/29
       * @param session
      * @param categoryId
@@ -123,7 +123,7 @@ public class CategoryManageController {
     }
     /*
     * @Author:HB
-    * @Description: 获取当前分类的子节点(深度查询)
+    * @Description: 获取当前分类的子节点(递归深度查询)
     * @Data:15:13 2018/5/29
     * @param session
     * @param categoryId

@@ -1,6 +1,7 @@
 package com.ReadEnjoyBack.service;
 
 import com.ReadEnjoyBack.common.ServerResponse;
+import com.ReadEnjoyBack.pojo.Comments;
 import com.ReadEnjoyBack.pojo.User;
 import com.github.pagehelper.PageInfo;
 
@@ -31,6 +32,18 @@ public interface IUserService {
     ServerResponse<User> updateInformation(User user);
     /*获取登录用户信息*/
     ServerResponse<User> getInformation(Integer userId);
+    /*邮箱验证*/
+    ServerResponse<String> sendEmailToValidate(String email,int code);
+    /*Token验证*/
+    ServerResponse<String> sendTokenToValidate(String email,String Token);
+    /*根据邮箱得到用户状态*/
+    ServerResponse getUserStatus(String email);
+    /*得到当前用户所有收藏*/
+    ServerResponse<List<Comments>> getUserAllComments(String email);
+    /*用户评论信息删除*/
+    ServerResponse<String> deleteUserComments(int commentId);
+    /*进行用户反馈操作*/
+    ServerResponse<String> feedbackDo(String userName,String feedbackInfo,String feedbackName);
    /*------------------------------------- 后台 ---------------------------------------*/
    /*检验是否有管理员权限*/
     ServerResponse<String> checkAdminRole(User user);

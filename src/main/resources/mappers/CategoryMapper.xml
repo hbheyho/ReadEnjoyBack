@@ -131,6 +131,6 @@
     SELECT name
      FROM  readenjoy_bookcategory
      WHERE id = #{categoryId}
-
   </select>
+
 </mapper>

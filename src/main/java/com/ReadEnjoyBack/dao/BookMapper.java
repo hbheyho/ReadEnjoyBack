@@ -17,6 +17,17 @@ public interface BookMapper {
     int updateByPrimaryKeySelective(Book record);
 
     int updateByPrimaryKey(Book record);
+    /*--------------------------------------------前台------------------------------------------------------------*/
+    /*得到书籍列表通过书籍下载量*/
+    List<Book> getBookListByDownNumber();
+    /*根据书名/作者/出版社/对书籍进行查询(前台)*/
+    List<Book> selectBookByBookNameOrBookWriterOrPublicNameFront(@Param("conditionName") String conditionName);
+    /*通过书籍ISBN获取书籍详细信息*/
+    Book getBookDetail(@Param("bookISBN") String BookISBN);
+    /*检查书籍ISBN是否存在*/
+    int checkBookIsbn(@Param("bookIsbn") String bookIsbn);
+    /*通过分类得到相应书籍列表*/
+    List<Book> selectBookListByCategoryId(@Param("parentId") int parentId,@Param("categoryId") int categoryId );
 /*--------------------------------------------后台------------------------------------------------------------*/
     /*对书籍进行列表查询*/
     List<Book> selectList();
@@ -27,13 +38,5 @@ public interface BookMapper {
                                                             @Param(value = "categoryName")String categoryName );
    /*检查书籍状态*/
     Integer selectBookStatus(@Param("bookId") Integer bookId);
-/*--------------------------------------------前台------------------------------------------------------------*/
-    /*得到书籍列表通过书籍下载量*/
-    List<Book> getBookListByDownNumber();
-   /*根据书名/作者/出版社/对书籍进行查询(前台)*/
-    List<Book> selectBookByBookNameOrBookWriterOrPublicNameFront(@Param("conditionName") String conditionName);
-    /*通过书籍ISBN获取书籍详细信息*/
-    Book getBookDetail(@Param("bookISBN") String BookISBN);
-    /*检查书籍ISBN是否存在*/
-    int checkBookIsbn(@Param("bookIsbn") String bookIsbn);
+
 }

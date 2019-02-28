@@ -114,7 +114,7 @@ public class BookVersionController {
     }
     /*
    * @Author:HB
-   * @Description: 得到当前登录用户的收藏书籍信息
+   * @Description: 得到当前登录用户的收藏书籍信息--1 分类
    * @Data:8:25 2018/6/11
    * @param
    returns:
@@ -135,6 +135,28 @@ public class BookVersionController {
         // 得到当前用户名
         String userName = user.getUsername();
         return iBookVersionService.getUserCollection(userName,pageNum,pageSize);
+    }
+    /*
+   * @Author:HB
+   * @Description: 得到当前登录用户的收藏书籍信息--2 不分类
+   * @Data:8:25 2018/6/11
+   * @param
+   returns:
+  */
+    @RequestMapping(value = "get_user_collection_notPage.do")
+    @ResponseBody
+    ServerResponse getUserCollectInfoNotPage(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorMessage("用户未登录，登录之后在进行操作噢！");
+        }
+        // 得到当前用户名
+        String userName = user.getUsername();
+        return iBookVersionService.getUserCollectionNotPage(userName);
     }
     /*
   * @Author:HB
@@ -183,6 +205,54 @@ public class BookVersionController {
         // 得到当前用户名
         String userName = user.getUsername();
         return iBookVersionService.getUserDownloadInfo(userName,pageNum,pageSize);
+    }
+    /*
+     * @Author:HB
+     * @Description: 用户评论
+     * @Data:15:24 2018/12/27
+     * @param null
+     returns:
+    */
+    @RequestMapping(value = "inset_version_comments.do")
+    @ResponseBody
+    ServerResponse InsertVersionComments(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                                 @RequestParam(value = "bookVersion") int bookVersion,
+                                                 @RequestParam(value = "bookISBN") String bookISBN,
+                                                 @RequestParam(value = "commentInfo") String commentInfo){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
+        }
+        String userEmail = user.getEmail();
+        return iBookVersionService.insertComments(userEmail,bookVersion,bookISBN,commentInfo);
+    }
+
+    /*
+     * @Author:HB
+     * @Description: 版本举报
+     * @Data:15:24 2018/12/27
+     * @param null
+     returns:
+    */
+    @RequestMapping(value = "report_version.do")
+    @ResponseBody
+    ServerResponse<String> reportBookVersion(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                         @RequestParam(value = "bookVersionId") int bookVersionId,
+                                         @RequestParam(value = "reason") String reason){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        // 跨域的session 保证同一性
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
+        }
+        String userName = user.getUsername();
+        return iBookVersionService.reportBookVersion(userName,bookVersionId,reason);
     }
 
 }

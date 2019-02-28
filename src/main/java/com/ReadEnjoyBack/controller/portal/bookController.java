@@ -3,23 +3,13 @@ package com.ReadEnjoyBack.controller.portal;
 import com.ReadEnjoyBack.common.Const;
 import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
-import com.ReadEnjoyBack.pojo.BookVersion;
 import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.service.IBookService;
-import com.ReadEnjoyBack.service.IBookVersionService;
 import com.ReadEnjoyBack.service.IFileService;
-import com.ReadEnjoyBack.util.PropertiesUtil;
 import com.ReadEnjoyBack.vo.BookDetailVo;
 import com.ReadEnjoyBack.vo.BookListVo;
-import com.ReadEnjoyBack.vo.BookVersionVO;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,10 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author:HB
@@ -140,5 +127,24 @@ public class BookController {
         fileMap.put("url",url);*/
         /*return ServerResponse.createBySuccesse(fileMap);*/
     }
+    
+    /*
+     * @Author:HB
+     * @Description: // 分类信息搜索通过categoryId
+     * @Data:14:36 2019/1/24
+     * @param categoryId pageNum pageSize
+     returns:
+    */
+    @RequestMapping(value = "get_bookList_categoryId.do")
+    @ResponseBody
+    ServerResponse<PageInfo> getBookListByCategoryId(@RequestParam(value = "categoryId" , defaultValue = "0") int categoryId,HttpServletRequest request,HttpServletResponse response,
+                                                     @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                                     @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        System.out.println("111111111" + "|" + categoryId + "|" + pageNum + pageSize);
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        return iBookService.getBookListByCategoryId(categoryId,pageNum,pageSize);
+    }
+
 
 }

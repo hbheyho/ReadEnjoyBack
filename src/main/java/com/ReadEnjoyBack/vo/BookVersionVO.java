@@ -1,5 +1,9 @@
 package com.ReadEnjoyBack.vo;
 
+import com.ReadEnjoyBack.pojo.Comments;
+
+import java.util.List;
+
 /**
  * @Author:HB
  * @Description: 书籍版本业务类
@@ -9,6 +13,8 @@ public class BookVersionVO {
     private Integer id;
 
     private String uploadUser;
+
+    private String uploadUserHeadPic;
 
     private String bookSize;
 
@@ -24,12 +30,22 @@ public class BookVersionVO {
 
     private String updateTime;
 
+
+    private List<Comments> versionComments; // 版本的评论信息
+
+    int commentNumber;  // 评论条数
+
+    /*-----版本生成的swf文件的名字以及所存的服务器地址*/
+    private String swfHost;
+    private String swfName;
+
     public BookVersionVO() {
     }
 
-    public BookVersionVO(Integer id, String uploadUser, String bookSize, String bookOriginname, String bookUploadname, Integer downNumber, Integer collectNumber, String uploadTime, String updateTime) {
+    public BookVersionVO(Integer id, String uploadUser,String uploadUserHeadPic, String bookSize, String bookOriginname, String bookUploadname, Integer downNumber, Integer collectNumber, String uploadTime, String updateTime) {
         this.id = id;
         this.uploadUser = uploadUser;
+        this.uploadUserHeadPic = uploadUserHeadPic;
         this.bookSize = bookSize;
         this.bookOriginname = bookOriginname;
         this.bookUploadname = bookUploadname;
@@ -53,6 +69,14 @@ public class BookVersionVO {
 
     public void setUploadUser(String uploadUser) {
         this.uploadUser = uploadUser;
+    }
+
+    public String getUploadUserHeadPic() {
+        return uploadUserHeadPic;
+    }
+
+    public void setUploadUserHeadPic(String uploadUserHeadPic) {
+        this.uploadUserHeadPic = uploadUserHeadPic;
     }
 
     public String getBookSize() {
@@ -109,5 +133,38 @@ public class BookVersionVO {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<Comments> getVersionComments() {
+        return versionComments;
+    }
+
+    public void setVersionComments(List<Comments> versionComments) {
+        this.versionComments = versionComments;
+    }
+
+    public int getCommentNumber() {
+        return commentNumber;
+    }
+
+    public void setCommentNumber(int commentNumber) {
+        this.commentNumber = commentNumber;
+    }
+
+    /*-----版本生成的swf文件的名字以及所存的服务器地址*/
+    public String getSwfHost() {
+        return swfHost;
+    }
+
+    public void setSwfHost(String swfHost) {
+        this.swfHost = swfHost;
+    }
+
+    public String getSwfName() {
+        return swfName;
+    }
+
+    public void setSwfName(String swfName) {
+        this.swfName = swfName;
     }
 }

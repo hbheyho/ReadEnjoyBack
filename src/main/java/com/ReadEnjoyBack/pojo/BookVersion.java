@@ -26,7 +26,7 @@ public class BookVersion {
 
     private Date updateTime;
 
-    private List<UserCollection> userCollectionList;  // 版本的用户收藏属性
+    private List<UserCollection> userCollectionList;  // 版本的用户收藏信息
 
     private List<UserUpload> userUploadList;  // 版本的用户上传信息
 

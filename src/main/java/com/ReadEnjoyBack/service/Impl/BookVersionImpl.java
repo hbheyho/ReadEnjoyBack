@@ -1,19 +1,18 @@
 package com.ReadEnjoyBack.service.Impl;
 
+import com.ReadEnjoyBack.common.Const;
 import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
-import com.ReadEnjoyBack.dao.BookMapper;
-import com.ReadEnjoyBack.dao.BookVersionMapper;
-import com.ReadEnjoyBack.dao.UserCollectionMapper;
-import com.ReadEnjoyBack.pojo.Book;
-import com.ReadEnjoyBack.pojo.BookVersion;
-import com.ReadEnjoyBack.pojo.UserCollection;
+import com.ReadEnjoyBack.dao.*;
+import com.ReadEnjoyBack.pojo.*;
 import com.ReadEnjoyBack.service.IBookVersionService;
 import com.ReadEnjoyBack.util.DateTimeUtil;
+import com.ReadEnjoyBack.util.PropertiesUtil;
 import com.ReadEnjoyBack.vo.BookVersionVO;
 import com.ReadEnjoyBack.vo.UserOperationVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,12 @@ public class BookVersionImpl  implements IBookVersionService{
     private BookMapper bookMapper;
     @Autowired
     private UserCollectionMapper userCollectionMapper;
+    @Autowired
+    private CommentsMapper commentsMapper;
+    @Autowired
+    private BookReportMapper bookReportMapper;
+    @Autowired
+    private UserMapper userMapper;
     /*
    * @Author:HB
    * @Description: 通过uploadName 得到 originName
@@ -71,9 +76,7 @@ public class BookVersionImpl  implements IBookVersionService{
         if (bookISBN == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
-        System.out.println("开始获得书籍版本信息:" );
         List<BookVersion> bookVersionList = bookVersionMapper.selectByBookISBN(bookISBN);
-        System.out.println("当前书籍版本信息:" + bookVersionList);
         List<BookVersionVO> bookVersionVOList = new ArrayList<BookVersionVO>();
         for (BookVersion bookVersion : bookVersionList){
             BookVersionVO bookVersionVO = assembleBookVersionVo(bookVersion);
@@ -90,27 +93,46 @@ public class BookVersionImpl  implements IBookVersionService{
        */
     @Override
     public ServerResponse inserCollectionInfo(Integer bookVersionId, String username) {
-        UserCollection userCollection = new UserCollection();
-        userCollection.setBookVersionId(bookVersionId);
-        userCollection.setUserName(username);
-        int resultCount = userCollectionMapper.insert(userCollection);
-        if (resultCount == 0){
-            return ServerResponse.createByErrorMessage("收藏失败");
+        // 判断当前版本是否收藏
+        int result = userCollectionMapper.isCollection(username,bookVersionId);
+        if (result == 0){
+            UserCollection userCollection = new UserCollection();
+            userCollection.setBookVersionId(bookVersionId);
+            userCollection.setUserName(username);
+            int resultCount = userCollectionMapper.insert(userCollection);
+            if (resultCount == 0){
+                return ServerResponse.createByErrorMessage("收藏失败");
+            }
+            // 更新书籍版本的收藏数量
+            resultCount = bookVersionMapper.updateCollectNumber(bookVersionId);
+            if (resultCount == 0){
+                logger.error("更新书籍版本的数量失败");
+            }
+            return ServerResponse.createBySuccessMessage("收藏成功");
+        }else {
+            return ServerResponse.createBySuccessMessage("你已收藏该版本!");
         }
-        // 更新书籍版本的收藏数量
-        resultCount = bookVersionMapper.updateCollectNumber(bookVersionId);
-        if (resultCount == 0){
-            logger.error("更新书籍版本的数量失败");
-        }
-        return ServerResponse.createBySuccessMessage("收藏成功");
     }
-       /*
-        * @Author:HB
-        * @Description: 得到当前登录用户的收藏书籍信息
-        * @Data:8:25 2018/6/11
-        * @param userName
-        returns:
-        */
+    /*
+     * @Author:HB
+     * @Description: 得到当前登录用户的收藏书籍信息 --- 1 不分类
+     * @Data:12:20 2019/1/26
+     * @param userName
+     returns:
+    */
+    @Override
+    public ServerResponse getUserCollectionNotPage(String userName) {
+        List<BookVersion> userCollectionList = bookVersionMapper.selectUserCollection(userName);
+        return ServerResponse.createBySuccesse(userCollectionList);
+    }
+
+    /*
+     * @Author:HB
+     * @Description: 得到当前登录用户的收藏书籍信息 --- 2 分类
+     * @Data:8:25 2018/6/11
+     * @param userName
+     returns:
+     */
     @Override
     public ServerResponse<PageInfo> getUserCollection(String userName,int pageNum,int pageSize) {
         // 开始分页
@@ -129,6 +151,7 @@ public class BookVersionImpl  implements IBookVersionService{
         pageInfo.setList(userOperationVoList);
         return ServerResponse.createBySuccesse(pageInfo);
     }
+
     /*
      * @Author:HB
      * @Description: 得到当前登录用户的上传书籍信息
@@ -177,12 +200,75 @@ public class BookVersionImpl  implements IBookVersionService{
         pageInfo.setList(userOperationVoList);
         return ServerResponse.createBySuccesse(pageInfo);
     }
+    /*
+     * @Author:HB
+     * @Description: 用户评论信息
+     * @Data:15:43 2018/12/27
+     * @param null
+     returns:
+    */
+    @Override
+    public ServerResponse insertComments(String userEmail, int bookVersion, String bookIsbn, String commentInfo) {
+       try {
+           Comments comments = new Comments();
+           comments.setUserEmail(userEmail);
+           comments.setBookIsbn(bookIsbn);
+           comments.setBookVersion(bookVersion);
+           comments.setCommentInfo(commentInfo);
+           commentsMapper.insertSelective(comments);
+       }catch (Exception e){
+           return ServerResponse.createByErrorMessage("评论失败!");
+       }
+        return ServerResponse.createBySuccessMessage("评论成功!");
+    }
+   /*
+    * @Author:HB
+    * @Description: 书籍版本举报
+    * @Data:16:19 2019/1/27
+    * @param userName,bookVersionId,reason
+    returns:
+   */
+    @Override
+    public ServerResponse<String> reportBookVersion(String userName, int bookVersionId, String reason) {
+        // 得到书籍上传者
+        String uploadName = bookVersionMapper.selectUploadUserNameById(bookVersionId);
+        if (uploadName == null){
+            return ServerResponse.createByErrorMessage("举报失败!请重新再试!");
+        }
+        BookReport bookReport = new BookReport();
+        bookReport.setBookVersionId(bookVersionId);
+        bookReport.setReportName(userName);
+        bookReport.setReportReason(reason);
+        bookReport.setUploadName(uploadName);
+        bookReport.setReportStatus(0);
+        // 进行举报信息插入
+        try {
+            bookReportMapper.insertSelective(bookReport);
+        }catch (Exception e){
+            return ServerResponse.createByErrorMessage("举报失败!请重新再试!");
+        }
+        return ServerResponse.createBySuccessMessage("举报成功!");
+    }
 
 
     /*---------------------------------------VO业务类-------------------------------------------*/
     // 书籍版本业务类初始化
     private BookVersionVO assembleBookVersionVo(BookVersion bookVersion){
+        // 根据versionID查询相应的评论信息
+        int versionID = bookVersion.getId();
+        List<Comments> commentsList = commentsMapper.getCommentInfo(versionID);
+        // 评论时间格式化
+        for (Comments comments: commentsList){
+            comments.setCommentTimeS(DateTimeUtil.dateToStr(comments.getCommentTime()));
+            comments.setImageHost(PropertiesUtil.getProperty("userImage.server","userImage.readenjoy.com"));
+            comments.setUsername(comments.getUserList().get(0).getUsername());
+            comments.setHeadpic(comments.getUserList().get(0).getHeadpic());
+        }
         BookVersionVO bookVresionVo = new BookVersionVO();
+        // 当前版本书籍的评论信息
+        bookVresionVo.setVersionComments(commentsList);
+        bookVresionVo.setCommentNumber(commentsList.size());
+
         bookVresionVo.setId(bookVersion.getId());
         bookVresionVo.setBookSize(bookVersion.getBookSize());
         bookVresionVo.setBookOriginname(bookVersion.getBookOriginname());
@@ -192,6 +278,20 @@ public class BookVersionImpl  implements IBookVersionService{
         bookVresionVo.setUpdateTime(DateTimeUtil.dateToStr(bookVersion.getUpdateTime()));
         bookVresionVo.setUploadTime(DateTimeUtil.dateToStr(bookVersion.getUpdateTime()));
         bookVresionVo.setUploadUser(bookVersion.getUploadUser());
+
+        // 根据用户名得到相应用户头像
+        String uploadUserHeadPic = userMapper.getUserHeadPicByName(bookVersion.getUploadUser());
+        bookVresionVo.setUploadUserHeadPic(uploadUserHeadPic);
+
+        /*-----版本生成的swf文件的名字以及所存的服务器地址（mobi epub格式不生成）*/
+        String extentName = bookVersion.getBookOriginname().
+                substring(bookVersion.getBookOriginname().lastIndexOf(".") + 1);
+        if (!StringUtils.equals(extentName,"mobi") && !StringUtils.equals(extentName,"epub")){
+            bookVresionVo.setSwfHost(PropertiesUtil.getProperty("swf.server"));
+            String swfName = bookVersion.getBookUploadname()
+                    .substring(0,bookVersion.getBookUploadname().lastIndexOf(".")) + ".swf";
+            bookVresionVo.setSwfName(swfName);
+        }
         return bookVresionVo;
     }
     // 用户收藏业务类初始化
@@ -228,3 +328,5 @@ public class BookVersionImpl  implements IBookVersionService{
         return userOperationVo;
     }
 }
+
+

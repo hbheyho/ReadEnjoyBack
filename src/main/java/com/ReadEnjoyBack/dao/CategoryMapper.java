@@ -22,4 +22,5 @@ public interface CategoryMapper {
 
     /*得到当前分类Id的分类名字*/
     String getCategoryName(Integer categoryId);
+
 }

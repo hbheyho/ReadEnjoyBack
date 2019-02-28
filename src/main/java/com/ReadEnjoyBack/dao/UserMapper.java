@@ -47,7 +47,15 @@ public interface UserMapper {
     /*用户头像更新*/
     int updateUserHeadPicByUserName(@Param("uploadFileName") String uploadFileName, @Param("userName") String userName);
 
+    /*根据用户的邮箱得到用户状态码*/
+    int getUserStatus(@Param("email") String email);
+
+    /*根据用户名得到用户头像*/
+    String getUserHeadPicByName(@Param("userName") String userName);
+
     /*-----后台------*/
+    /*更新用户状态*/
+    int updateUserState(String email);
     /*得到用户列表*/
     List<User> selectUserList();
     /*检查用户状态*/

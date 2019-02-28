@@ -23,7 +23,7 @@ public class TokenCache {
     // 超过10000就使用LRU算法进行清除
    // 申明一个静态的内存块(初始化容量为1000 最大为10000 有效期为12个小时 在build里面进行一个匿名实现)
     private static LoadingCache<String,String> loadingCache = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(10000)
-           .expireAfterAccess(12, TimeUnit.HOURS).build(new CacheLoader<String, String>() {
+           .expireAfterAccess(30, TimeUnit.MINUTES).build(new CacheLoader<String, String>() {
                /*默认的数据加载实现 当调用key取值的时候 如果key没有对应的值 就调用这个方法加载*/
                @Override
                public String load(String key) throws Exception {
@@ -32,6 +32,7 @@ public class TokenCache {
            });
     /*set key and value*/
     public static  void setKey(String key,String value){
+
         loadingCache.put(key, value);
     }
     /*get key*/

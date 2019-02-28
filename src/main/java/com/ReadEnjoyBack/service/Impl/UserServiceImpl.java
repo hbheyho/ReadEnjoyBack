@@ -3,12 +3,17 @@ package com.ReadEnjoyBack.service.Impl;
 import com.ReadEnjoyBack.common.Const;
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.common.TokenCache;
+import com.ReadEnjoyBack.dao.CommentsMapper;
+import com.ReadEnjoyBack.dao.FeedbackMapper;
 import com.ReadEnjoyBack.dao.UserMapper;
+import com.ReadEnjoyBack.pojo.Comments;
+import com.ReadEnjoyBack.pojo.Feedback;
 import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.pojo.UserCollection;
 import com.ReadEnjoyBack.service.IUserService;
 import com.ReadEnjoyBack.util.DateTimeUtil;
 import com.ReadEnjoyBack.util.MD5Util;
+import com.ReadEnjoyBack.util.MailUtil;
 import com.ReadEnjoyBack.util.PropertiesUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * @Author:HB
@@ -26,10 +32,13 @@ import java.util.UUID;
  */
 @Service("iUserService")
 public class UserServiceImpl implements IUserService {
-    /*注入usermapper*/
+
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
+    private CommentsMapper commentsMapper;
+    @Autowired
+    private FeedbackMapper feedbackMapper;
     /*------------------------------------- 前台 ---------------------------------------*/
     /*
      * @Author:HB
@@ -37,26 +46,25 @@ public class UserServiceImpl implements IUserService {
      * @Data:17:33 2018/5/17
      * @param username
      * @param password
-     returns:com.ReadEnjoyBack.common.ServerResponse<com.ReadEnjoyBack.pojo.User>
+     returns:com.ReadEnjoyBack.common.ServerResponse<com.ReadEnjoyBack.pojo.7User>
      */
     @Override
-    public ServerResponse<User> login(String email, String password) {
+    public ServerResponse<User> login(String email, String MD5Password) {
         ServerResponse validResponse = checkValid(email,Const.EMAIL);
         if (validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("当前邮箱不存在");
         }
-        String MD5Password = MD5Util.MD5EncodeUtf8(password);
         User user = userMapper.selectLogin(email,MD5Password);
         /*已经判断了邮箱 判断密码就行*/
         if (user == null){
             return ServerResponse.createByErrorMessage("密码错误");
         }
         if (user.getStatus() == 0){
-            return ServerResponse.createByErrorMessage("该账户无效");
+            return  ServerResponse.createByErrorCodeMessage(2,"该账户无效,暂未进行邮箱验证或被停用");
         }
         /*用户密码置空 不返回*/
         user.setPassword(StringUtils.EMPTY);
-        user.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://image.readenjoy.com/"));
+        user.setImageHost(PropertiesUtil.getProperty("userImage.server","http://userImage.readenjoy.com/"));
         return ServerResponse.createBySuccesse("登录成功",user);
     }
     /*
@@ -79,7 +87,7 @@ public class UserServiceImpl implements IUserService {
         }
         /*设置用户权限*/
         user.setRole(Const.Role.ROLE_CUSTOMER);
-        user.setStatus(Const.USERSTATUS);
+        user.setStatus(Const.UserStatus.Status_off);
         user.setHeadpic("default.jpg");
         /*md5加密*/
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
@@ -104,12 +112,21 @@ public class UserServiceImpl implements IUserService {
                 int resultCount = userMapper.checkUsername(str);
                 if (resultCount > 0){
                     return ServerResponse.createByErrorMessage("该用户名已存在");
+                }else{
+                    return  ServerResponse.createBySuccessMessage("此用户可用");
                 }
             }
-            if (Const.EMAIL.equals(type)){  //用户检验
+            if (Const.EMAIL.equals(type)){  //邮箱检验
                 int resultCount = userMapper.checkEmail(str);
                 if (resultCount > 0){
                     return ServerResponse.createByErrorMessage("该邮箱已存在");
+                }{
+                    // 邮箱正则验证
+                   if (Pattern.matches("^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w{2,3}){1,3})$",str)){
+                       return  ServerResponse.createBySuccessMessage("此邮箱可用");
+                   }else{
+                       return  ServerResponse.createByErrorMessage("邮箱格式错误");
+                   }
                 }
             }
         }else{
@@ -260,9 +277,147 @@ public class UserServiceImpl implements IUserService {
         }
         //密码置空
         user.setPassword(StringUtils.EMPTY);
-        user.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://image.readenjoy.com/"));
+        user.setImageHost(PropertiesUtil.getProperty("userImage.server","http://userImage.readenjoy.com/"));
+        user.setCTime(DateTimeUtil.dateToStr(user.getCreateTime()));
         return ServerResponse.createBySuccesse(user);
     }
+    /*
+     * @Author:HB
+     * @Description: 邮箱验证
+     * @Data:17:26 2019/1/16
+     * @param email code (code 0-发送邮件来验证用户 1-发送邮件来修改密码)
+     returns: Token
+    */
+    @Override
+    public ServerResponse<String> sendEmailToValidate(String email,int code) {
+        // 生成一个随机的Token
+        String Token = UUID.randomUUID().toString();
+        // 把Token存入内存
+        TokenCache.setKey(TokenCache.TOKEN_PREFIX + email,Token);
+        // 发送邮件
+        try {
+            if (code == 0){
+                String URL = PropertiesUtil.getProperty("location.validate") + Token;
+                // 发送邮件
+                MailUtil.sendTextMail(email,URL);
+                return ServerResponse.createBySuccessMessage("邮件发送成功!");
+            }else{
+                String URL = PropertiesUtil.getProperty("location.modifyPsw") + Token;
+                MailUtil.sendTextMail(email,URL);
+                return ServerResponse.createBySuccessMessage("邮件发送成功!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("邮件发送失败!");
+        }
+    }
+    /*
+     * @Author:HB
+     * @Description: Token验证
+     * @Data:17:57 2019/1/16
+     * @param email Token
+     returns:
+    */
+    @Override
+    public ServerResponse<String> sendTokenToValidate(String email, String Token) {
+        if (StringUtils.isBlank(Token)){
+            return ServerResponse.createByErrorMessage("参数错误!");
+        }
+        /*获取缓存的Token值*/
+        String TokenFromCache = TokenCache.getKey(TokenCache.TOKEN_PREFIX + email);
+        if (StringUtils.isBlank(TokenFromCache)){
+            return ServerResponse.createByErrorMessage("验证过期或者无效!");
+        }
+        // Token对比
+        if (StringUtils.equals(TokenFromCache,Token)){
+            // 改变用户状态
+            int resultCount = userMapper.updateUserState(email);
+            if (resultCount > 0){
+                return ServerResponse.createBySuccessMessage("验证成功!请享受您的阅读之旅~");
+            }
+            return ServerResponse.createByErrorMessage("邮箱验证失败!");
+        }else{
+            return ServerResponse.createByErrorMessage("验证过期或者无效!");
+        }
+    }
+    /*
+     * @Author:HB
+     * @Description: 根据用户eamil得到当前用户状态
+     * @Data:15:10 2019/1/20
+     * @param email
+     returns:
+    */
+    @Override
+    public ServerResponse getUserStatus(String email) {
+         /*检验用户名是否存在*/
+        ServerResponse validResponse = this.checkValid(email,Const.EMAIL);
+        if (validResponse.isSuccess()){
+            return ServerResponse.createByErrorMessage("当前邮箱不存在");
+        }
+        // 得到当前用户状态码
+        int status = userMapper.getUserStatus(email);
+        return ServerResponse.createBySuccesse(status);
+    }
+    /*
+     * @Author:HB
+     * @Description: 得到当前用户所有评论
+     * @Data:10:10 2019/1/28
+     * @param email
+     returns:
+    */
+    @Override
+    public ServerResponse<List<Comments>> getUserAllComments(String email) {
+        List<Comments> commentsList = commentsMapper.getUserAllComments(email);
+        if (commentsList.size() == 0){
+            return ServerResponse.createByErrorMessage("当前用户暂无评论");
+        }
+        return ServerResponse.createBySuccesse(commentsList);
+    }
+    /*
+     * @Author:HB
+     * @Description:用户评论信息删除
+     * @Data:14:08 2019/1/28
+     * @param  commentId
+     returns:
+    */
+    @Override
+    public ServerResponse<String> deleteUserComments( int commentId) {
+        int result = commentsMapper.deleteByPrimaryKey(commentId);
+        if (result > 0){
+            return ServerResponse.createBySuccessMessage("删除成功!");
+        }else {
+            return ServerResponse.createByErrorMessage("删除失败!");
+        }
+    }
+    /*
+     * @Author:HB
+     * @Description: 用户反馈信息插入
+     * @Data:21:38 2019/2/26
+     * @param  feedbackInfo feedbackName
+     returns: String
+    */
+    @Override
+    public ServerResponse<String> feedbackDo(String userName, String feedbackInfo, String feedbackName) {
+        if (StringUtils.isBlank(feedbackInfo) && StringUtils.isBlank(feedbackName)){
+            return ServerResponse.createByErrorMessage("请输入相应反馈类型或内容");
+        }
+        Feedback feedback = new Feedback();
+        feedback.setFbInfo(feedbackInfo);
+        feedback.setFbName(feedbackName);
+        feedback.setFbUsrname(userName);
+        if ("网站反馈".equals(feedbackName)){
+            feedback.setFbType(0);
+        }else {
+            feedback.setFbType(1);
+        }
+        int result = feedbackMapper.insertSelective(feedback);
+        if (result > 0){
+            return ServerResponse.createBySuccessMessage("反馈成功!");
+        }
+        return ServerResponse.createByErrorMessage("反馈失败!");
+    }
+
+
     /*------------------------------------- 后台 ---------------------------------------*/
     /*
      * @Author:HB
@@ -293,7 +448,7 @@ public class UserServiceImpl implements IUserService {
         // 填充自己的sal逻辑
         List<User> userList = userMapper.selectUserList();
         for(User  userItem: userList ){
-            userItem.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://image.readenjoy.com/"));
+            userItem.setImageHost(PropertiesUtil.getProperty("userImage.server","http://userImage.readenjoy.com/"));
             userItem.setCTime(DateTimeUtil.dateToStr(userItem.getCreateTime()));
             userItem.setUTime(DateTimeUtil.dateToStr(userItem.getUpdateTime()));
             userItem.setPassword(StringUtils.EMPTY);
@@ -323,7 +478,7 @@ public class UserServiceImpl implements IUserService {
         /*设置用户权限*/
         user.setRole(Const.Role.ROLE_CUSTOMER);
         /*设置用户状态*/
-        user.setStatus(Const.USERSTATUS);
+        user.setStatus(Const.UserStatus.Status_on);
         /*md5加密*/
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
         /*插入用户*/
@@ -370,13 +525,13 @@ public class UserServiceImpl implements IUserService {
         if (Const.USERSTATUS == userStatus ){  // 用户有效 1
             User user = new User();
             user.setId(userId);
-            user.setStatus(0);
+            user.setStatus(2); //代表用户处于停用状态
             int resultCount = userMapper.updateByPrimaryKeySelective(user);
             if (resultCount == 0){
                 return ServerResponse.createByErrorMessage("修改用户状态失败");
             }
             return ServerResponse.createBySuccessMessage("修改用户状态成功");
-        }else {  // 用户无效
+        }else {  // 用户无效 2
             User user = new User();
             user.setId(userId);
             user.setStatus(1);

@@ -14,6 +14,15 @@ import java.util.List;
  * @Createdata:Created in  8:57  2018/5/29.
  */
 public interface IBookService {
+    /*---------------前台--------------------*/
+    /*获取书籍信息 根据下载的书籍次数*/
+    ServerResponse<List<BookListVo>> getBookByDownNumber();
+    /*数据搜索 （根据书名/ 书籍作者/ 书籍出版社*/
+    ServerResponse<List<BookListVo>> searchBookByBookNameAndBookWriterAndPublish(String conditionName);
+    /*书籍ISBN号检查*/
+    ServerResponse<String> checkBookIsbn(String bookIsbn);
+    /*分类信息搜索通过categoryId*/
+    ServerResponse<PageInfo> getBookListByCategoryId(int categoryId,int pageNum,int pageSize);
     /*---------------后台--------------------*/
     /*新增或者更新书籍信息*/
     ServerResponse<String> saveOrUpdateBook(Book book);
@@ -27,10 +36,6 @@ public interface IBookService {
     ServerResponse<String> deleteBook(Integer bookId);
     /*修改书籍状态*/
     ServerResponse<String> modifyBookStatus(Integer bookId);
-    /*---------------前台--------------------*/
-    /*获取书籍信息 根据下载的书籍次数*/
-    ServerResponse<List<BookListVo>> getBookByDownNumber();
-    /*数据搜索 （根据书名/ 书籍作者/ 书籍出版社*/
-    ServerResponse<List<BookListVo>> searchBookByBookNameAndBookWriterAndPublish(String conditionName);
-    ServerResponse<String> checkBookIsbn(String bookIsbn);
+
+
 }

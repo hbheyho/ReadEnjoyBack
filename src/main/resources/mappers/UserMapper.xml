@@ -274,4 +274,25 @@
     FROM readenjoy_user
     WHERE id = #{userId}
   </select>
+
+  <!--根据邮箱对用户状态进行更新-->
+  <update id="updateUserState" parameterType="string">
+    UPDATE readenjoy_user
+    SET status = 1
+    WHERE email = #{email}
+  </update>
+
+  <!--根据邮箱查找当前用户的状态-->
+  <select id="getUserStatus" parameterType="string" resultType="int">
+    SELECT status
+    FROM readenjoy_user
+    WHERE email = #{email}
+  </select>
+
+  <!--根据用户名得用户头像-->
+  <select id="getUserHeadPicByName" parameterType="string" resultType="string">
+    SELECT headPic
+    FROM readenjoy_user
+    WHERE username = #{userName}
+  </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.ReadEnjoyBack.dao;
 
 import com.ReadEnjoyBack.pojo.BookVersion;
+import com.ReadEnjoyBack.pojo.Comments;
 import com.ReadEnjoyBack.pojo.UserCollection;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,4 +38,6 @@ public interface BookVersionMapper {
     List<BookVersion> selectUserDown(@Param("username") String userName);
     /*根据实际ISBN获得当前书籍的版本数量*/
     int selectBookVersionNumber(@Param("bookISBN") String bookISBN);
+    /*根据版本id得到上传者*/
+    String selectUploadUserNameById(@Param("bookVersionId") int bookVersionId);
 }
