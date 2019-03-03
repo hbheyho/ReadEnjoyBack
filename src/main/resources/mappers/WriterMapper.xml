@@ -148,4 +148,10 @@
     FROM readenjoy_writer
     WHERE enter_time = #{year}
   </select>
+
+  <!--得到所有年份信息-->
+  <select id="getAllYear"  resultType="string">
+    SELECT DISTINCT  enter_time
+    FROM readenjoy_writer
+  </select>
 </mapper>

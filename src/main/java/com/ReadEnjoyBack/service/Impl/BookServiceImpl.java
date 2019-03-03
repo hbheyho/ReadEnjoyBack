@@ -15,9 +15,7 @@ import com.ReadEnjoyBack.vo.BookDetailVo;
 import com.ReadEnjoyBack.vo.BookListVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,8 +89,8 @@ public class BookServiceImpl implements IBookService {
             return ServerResponse.createByErrorMessage("书籍被删除或者不存在！");
         }
         // 生成bookDetailVo
-        BookDetailVo  bookDetailVo = assembleBookDetailVo(bookDetail);
-        return ServerResponse.createBySuccesse(bookDetailVo);
+        BookDetailVo BookDetailVo = assembleBookDetailVo(bookDetail);
+        return ServerResponse.createBySuccesse(BookDetailVo);
     }
     /*
      * @Author:HB
@@ -336,35 +334,35 @@ public class BookServiceImpl implements IBookService {
 
     // 根据book生成一个bookDetailVo对象
     private BookDetailVo assembleBookDetailVo(Book book){
-        BookDetailVo bookDetailVo = new BookDetailVo();
-        bookDetailVo.setBookId(book.getBookId());
-        bookDetailVo.setBookImage(book.getBookImage());
-        bookDetailVo.setBookIsbn(book.getBookIsbn());
-        bookDetailVo.setCategoryId(book.getCategoryId());
-        bookDetailVo.setBookName(book.getBookName());
-        bookDetailVo.setBookWriter(book.getBookWriter());
-        bookDetailVo.setBookTranster(book.getBookTranster());
-        bookDetailVo.setBookPublish(book.getBookPublish());
-        bookDetailVo.setBookInfo(book.getBookInfo());
-        bookDetailVo.setBookDirectory(book.getBookDirectory());
-        bookDetailVo.setBookWriterInformation(book.getBookWriterInformation());
-        bookDetailVo.setBookScore(book.getBookScore());
-        bookDetailVo.setBookStatus(book.getBookStatus());
+        BookDetailVo BookDetailVo = new BookDetailVo();
+        BookDetailVo.setBookId(book.getBookId());
+        BookDetailVo.setBookImage(book.getBookImage());
+        BookDetailVo.setBookIsbn(book.getBookIsbn());
+        BookDetailVo.setCategoryId(book.getCategoryId());
+        BookDetailVo.setBookName(book.getBookName());
+        BookDetailVo.setBookWriter(book.getBookWriter());
+        BookDetailVo.setBookTranster(book.getBookTranster());
+        BookDetailVo.setBookPublish(book.getBookPublish());
+        BookDetailVo.setBookInfo(book.getBookInfo());
+        BookDetailVo.setBookDirectory(book.getBookDirectory());
+        BookDetailVo.setBookWriterInformation(book.getBookWriterInformation());
+        BookDetailVo.setBookScore(book.getBookScore());
+        BookDetailVo.setBookStatus(book.getBookStatus());
 
         // imagehost
-        bookDetailVo.setImageHost(PropertiesUtil.getProperty("bookImage.server","bookImage.readenjoy.com"));
+        BookDetailVo.setImageHost(PropertiesUtil.getProperty("bookImage.server","bookImage.readenjoy.com"));
         // patrentCategoryId and categoryName;
         Category category = categoryMapper.selectByPrimaryKey(book.getCategoryId());
         if (category == null){
-           bookDetailVo.setParentCategoryId(0);
+           BookDetailVo.setParentCategoryId(0);
         }else {
-           bookDetailVo.setParentCategoryId(category.getParentId());
-           bookDetailVo.setCategoryName(category.getName());
+           BookDetailVo.setParentCategoryId(category.getParentId());
+           BookDetailVo.setCategoryName(category.getName());
         }
         //createTime
-        bookDetailVo.setCreateTime(DateTimeUtil.dateToStr(book.getCreateTime()));
+        BookDetailVo.setCreateTime(DateTimeUtil.dateToStr(book.getCreateTime()));
         // updateTime
-        bookDetailVo.setUpdateTime(DateTimeUtil.dateToStr(book.getUpdateTime()));
-        return bookDetailVo;
+        BookDetailVo.setUpdateTime(DateTimeUtil.dateToStr(book.getUpdateTime()));
+        return BookDetailVo;
     }
 }

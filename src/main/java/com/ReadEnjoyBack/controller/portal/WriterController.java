@@ -38,5 +38,19 @@ public class WriterController {
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         return iWriterService.getWriterByYears(year);
     }
+    /*
+     * @Author:HB
+     * @Description:
+     * @Data:14:37 2019/3/3
+     * @param 获取所有年份
+     returns:
+    */
+    @RequestMapping(value = "get_years.do")
+    @ResponseBody
+    public ServerResponse<List<String>> getYears(HttpServletRequest request, HttpServletResponse response){
+        // 解决跨域
+        response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
+        return iWriterService.getYears();
+    }
 
 }

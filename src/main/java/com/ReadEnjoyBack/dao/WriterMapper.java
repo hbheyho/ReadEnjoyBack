@@ -20,4 +20,6 @@ public interface WriterMapper {
 
     /*得到作者信息根据年份*/
     List<Writer> SelectWriterByYear(@Param(value = "year") int year);
+    /*得到全部年份信息*/
+    List<String> getAllYear();
 }

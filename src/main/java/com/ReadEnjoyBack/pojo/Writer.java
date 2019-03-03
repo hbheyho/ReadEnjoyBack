@@ -1,5 +1,7 @@
 package com.ReadEnjoyBack.pojo;
 
+import com.sun.javafx.binding.StringFormatter;
+
 import java.util.Date;
 
 public class Writer {
@@ -20,6 +22,9 @@ public class Writer {
     private Date createTime;
 
     private Date updateTime;
+
+    /*图片服务器地址*/
+    private String ImageHost;
 
     public Writer(Integer id, String writerName, String writerBirth, String writerInfo, String writerImage, String enterTime, String writerFrom, Date createTime, Date updateTime) {
         this.id = id;
@@ -107,5 +112,13 @@ public class Writer {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getImageHost() {
+        return ImageHost;
+    }
+
+    public void setImageHost(String imageHost) {
+        ImageHost = imageHost;
     }
 }

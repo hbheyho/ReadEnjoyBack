@@ -13,4 +13,6 @@ import java.util.List;
 public interface IWriterService {
     /*通过年份得到用户信息*/
     ServerResponse<List<Writer>> getWriterByYears(int year);
+    /*获取年份信息*/
+    ServerResponse<List<String>> getYears();
 }

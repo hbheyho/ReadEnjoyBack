@@ -10,7 +10,6 @@ import com.ReadEnjoyBack.service.IFileService;
 import com.ReadEnjoyBack.service.IUserService;
 import com.ReadEnjoyBack.vo.BookDetailVo;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,7 +72,7 @@ public class BookManageController {
     */
     @RequestMapping(value = "detail.do")
     @ResponseBody
-    public ServerResponse<BookDetailVo> ManageGetBookDetail(HttpSession session , String bookISBN,HttpServletRequest request,
+    public ServerResponse<BookDetailVo> ManageGetBookDetail(HttpSession session , String bookISBN, HttpServletRequest request,
                                                             HttpServletResponse response){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));

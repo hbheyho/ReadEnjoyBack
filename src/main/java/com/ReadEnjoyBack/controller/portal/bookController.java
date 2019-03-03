@@ -34,13 +34,13 @@ public class BookController {
     private IBookService iBookService;
     @Autowired
     private IFileService iFileService;
-     /*
-      * @Author:HB
-      * @Description: 获取书籍信息 根据下载的书籍次数
-      * @Data:20:36 2018/6/1
-      * @param null
-      returns:
-     */
+    /*
+     * @Author:HB
+     * @Description: 获取书籍信息 根据下载的书籍次数
+     * @Data:20:36 2018/6/1
+     * @param null
+     returns:
+    */
     @RequestMapping(value = "get_book_downNumber.do")
     @ResponseBody
     public ServerResponse<List<BookListVo>> getBookByDownNumber(HttpServletRequest request, HttpServletResponse response){
@@ -81,7 +81,7 @@ public class BookController {
                                                             HttpServletRequest request,HttpServletResponse response){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));;
-       return iBookService.searchBookByBookNameAndBookWriterAndPublish(conditionName);
+        return iBookService.searchBookByBookNameAndBookWriterAndPublish(conditionName);
     }
     /*
      * @Author:HB
@@ -92,7 +92,7 @@ public class BookController {
     */
     @RequestMapping(value = "detail.do")
     @ResponseBody
-    public ServerResponse<BookDetailVo> getBookDetailInfoFront(String bookISBN,HttpServletRequest request,HttpServletResponse response){
+    public ServerResponse<BookDetailVo> getBookDetailInfoFront(String bookISBN, HttpServletRequest request, HttpServletResponse response){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         return  iBookService.getBookDetail(bookISBN);
@@ -108,7 +108,7 @@ public class BookController {
     @RequestMapping(value = "upload.do")
     @ResponseBody
     public ServerResponse uploadFile(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file,
-                                 HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "bookISBN") String bookISBN){
+                                     HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "bookISBN") String bookISBN){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         // 跨域的session 保证同一性
@@ -118,8 +118,8 @@ public class BookController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
         }
         // 上传文件的路径
-         String path =request.getSession().getServletContext().getRealPath("upload");
-         return iFileService.upload(file,path,user.getUsername(),bookISBN);
+        String path =request.getSession().getServletContext().getRealPath("upload");
+        return iFileService.upload(file,path,user.getUsername(),bookISBN);
         /*String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;*/
         // url拼接返回
         /*Map fileMap = Maps.newHashMap();
@@ -127,7 +127,7 @@ public class BookController {
         fileMap.put("url",url);*/
         /*return ServerResponse.createBySuccesse(fileMap);*/
     }
-    
+
     /*
      * @Author:HB
      * @Description: // 分类信息搜索通过categoryId

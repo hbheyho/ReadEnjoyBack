@@ -4,6 +4,7 @@ import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.dao.WriterMapper;
 import com.ReadEnjoyBack.pojo.Writer;
 import com.ReadEnjoyBack.service.IWriterService;
+import com.ReadEnjoyBack.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,25 @@ public class WriterServiceImpl implements IWriterService {
         if (writerList.size() == 0){
             return ServerResponse.createByErrorMessage("当前年份暂无相应作者");
         }
+        // 图片服务器地址添加
+        for (Writer writer: writerList){
+            writer.setImageHost(PropertiesUtil.getProperty("writerImage.server"));
+        }
         return ServerResponse.createBySuccesse(writerList);
+    }
+    /*
+     * @Author:HB
+     * @Description: 获取年份信息
+     * @Data:14:40 2019/3/3
+     * @param null
+     returns: List<year>
+    */
+    @Override
+    public ServerResponse<List<String>> getYears() {
+        List<String> yearList = writerMappler.getAllYear();
+        if (yearList.size() == 0){
+            return ServerResponse.createByErrorMessage("获取年份信息失败!");
+        }
+        return ServerResponse.createBySuccesse(yearList);
     }
 }
