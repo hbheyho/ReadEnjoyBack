@@ -6,13 +6,13 @@
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="fb_name" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="fb_info" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="fb_type" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="fb_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="fb_usrname" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="fb_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, fb_name, fb_info, fb_type, fb_usrname, fb_time
+    id, fb_name, fb_info, fb_status, fb_usrname, fb_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,10 +26,10 @@
   </delete>
   <insert id="insert" parameterType="com.ReadEnjoyBack.pojo.Feedback" >
     insert into readenjoy_feedback (id, fb_name, fb_info, 
-      fb_type, fb_usrname, fb_time
+      fb_status, fb_usrname, fb_time
       )
     values (#{id,jdbcType=INTEGER}, #{fbName,jdbcType=VARCHAR}, #{fbInfo,jdbcType=VARCHAR}, 
-      #{fbType,jdbcType=INTEGER}, #{fbUsrname,jdbcType=VARCHAR}, now()
+      #{fbStatus,jdbcType=INTEGER}, #{fbUsrname,jdbcType=VARCHAR}, now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.ReadEnjoyBack.pojo.Feedback" >
@@ -44,8 +44,8 @@
       <if test="fbInfo != null" >
         fb_info,
       </if>
-      <if test="fbType != null" >
-        fb_type,
+      <if test="fbStatus != null" >
+        fb_status,
       </if>
       <if test="fbUsrname != null" >
         fb_usrname,
@@ -64,8 +64,8 @@
       <if test="fbInfo != null" >
         #{fbInfo,jdbcType=VARCHAR},
       </if>
-      <if test="fbType != null" >
-        #{fbType,jdbcType=INTEGER},
+      <if test="fbStatus != null" >
+        #{fbStatus,jdbcType=INTEGER},
       </if>
       <if test="fbUsrname != null" >
         #{fbUsrname,jdbcType=VARCHAR},
@@ -84,8 +84,8 @@
       <if test="fbInfo != null" >
         fb_info = #{fbInfo,jdbcType=VARCHAR},
       </if>
-      <if test="fbType != null" >
-        fb_type = #{fbType,jdbcType=INTEGER},
+      <if test="fbStatus != null" >
+        fb_status = #{fbStatus,jdbcType=INTEGER},
       </if>
       <if test="fbUsrname != null" >
         fb_usrname = #{fbUsrname,jdbcType=VARCHAR},
@@ -100,9 +100,16 @@
     update readenjoy_feedback
     set fb_name = #{fbName,jdbcType=VARCHAR},
       fb_info = #{fbInfo,jdbcType=VARCHAR},
-      fb_type = #{fbType,jdbcType=INTEGER},
+      fb_status = #{fbStatus,jdbcType=INTEGER},
       fb_usrname = #{fbUsrname,jdbcType=VARCHAR},
       fb_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--得到评论列表-->
+  <select id="selectFeedbacksList" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List"/>
+  FROM readenjoy_feedback
+  </select>
 </mapper>

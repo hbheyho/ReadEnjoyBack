@@ -17,6 +17,7 @@ public class BookReport {
 
     private Date reportTime;
 
+
     public BookReport(Integer id, Integer bookVersionId, String reportReason, String reportName, String uploadName, Integer reportStatus, Date reportTime) {
         this.id = id;
         this.bookVersionId = bookVersionId;
@@ -86,4 +87,5 @@ public class BookReport {
     public void setReportTime(Date reportTime) {
         this.reportTime = reportTime;
     }
+
 }

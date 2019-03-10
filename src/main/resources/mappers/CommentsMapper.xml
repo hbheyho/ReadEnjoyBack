@@ -151,4 +151,11 @@
     FROM readenjoy_comments
     WHERE user_email = #{email}
   </select>
+
+  <!--得到评论列表-->
+  <select id="selectCommentsList" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List"/>
+  FROM readenjoy_comments
+  </select>
 </mapper>

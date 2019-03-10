@@ -5,7 +5,9 @@ import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.service.IBookVersionService;
+import com.ReadEnjoyBack.service.ICommentService;
 import com.ReadEnjoyBack.service.IFileService;
+import com.ReadEnjoyBack.service.IReportService;
 import com.ReadEnjoyBack.vo.BookVersionVO;
 import com.ReadEnjoyBack.vo.UserOperationVo;
 import com.github.pagehelper.PageInfo;
@@ -39,6 +41,10 @@ public class BookVersionController {
     private IBookVersionService iBookVersionService;
     @Autowired
     private IFileService iFileService;
+    @Autowired
+    private ICommentService iCommentService;
+    @Autowired
+    private IReportService iReportService;
     /*
     * @Author:HB
     * @Description: 存储用户的收藏信息
@@ -228,7 +234,7 @@ public class BookVersionController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
         }
         String userEmail = user.getEmail();
-        return iBookVersionService.insertComments(userEmail,bookVersion,bookISBN,commentInfo);
+        return iCommentService.insertComments(userEmail,bookVersion,bookISBN,commentInfo);
     }
 
     /*
@@ -252,7 +258,7 @@ public class BookVersionController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
         }
         String userName = user.getUsername();
-        return iBookVersionService.reportBookVersion(userName,bookVersionId,reason);
+        return iReportService.reportBookVersion(userName,bookVersionId,reason);
     }
 
 }

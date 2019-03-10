@@ -1,7 +1,6 @@
 package com.ReadEnjoyBack.dao;
 
 import com.ReadEnjoyBack.pojo.User;
-import com.ReadEnjoyBack.pojo.UserCollection;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -60,4 +59,6 @@ public interface UserMapper {
     List<User> selectUserList();
     /*检查用户状态*/
     Integer selectUserStatus(@Param(value = "userId") Integer userId);
+    // 根据邮箱得到用户信息
+    User getUserByEmail(@Param(value = "email") String email);
 }

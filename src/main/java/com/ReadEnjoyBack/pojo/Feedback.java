@@ -9,17 +9,19 @@ public class Feedback {
 
     private String fbInfo;
 
-    private Integer fbType;
+    private Integer fbStatus;
 
     private String fbUsrname;
 
     private Date fbTime;
 
-    public Feedback(Integer id, String fbName, String fbInfo, Integer fbType, String fbUsrname, Date fbTime) {
+    private String CTime;  // 反馈时间字符型
+
+    public Feedback(Integer id, String fbName, String fbInfo, Integer fbStatus, String fbUsrname, Date fbTime) {
         this.id = id;
         this.fbName = fbName;
         this.fbInfo = fbInfo;
-        this.fbType = fbType;
+        this.fbStatus = fbStatus;
         this.fbUsrname = fbUsrname;
         this.fbTime = fbTime;
     }
@@ -52,12 +54,12 @@ public class Feedback {
         this.fbInfo = fbInfo == null ? null : fbInfo.trim();
     }
 
-    public Integer getFbType() {
-        return fbType;
+    public Integer getFbStatus() {
+        return fbStatus;
     }
 
-    public void setFbType(Integer fbType) {
-        this.fbType = fbType;
+    public void setFbStatus(Integer fbStatus) {
+        this.fbStatus = fbStatus;
     }
 
     public String getFbUsrname() {
@@ -74,5 +76,13 @@ public class Feedback {
 
     public void setFbTime(Date fbTime) {
         this.fbTime = fbTime;
+    }
+
+    public String getCTime() {
+        return CTime;
+    }
+
+    public void setCTime(String CTime) {
+        this.CTime = CTime;
     }
 }

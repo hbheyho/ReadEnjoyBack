@@ -2,7 +2,6 @@ package com.ReadEnjoyBack.service;
 
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.vo.BookVersionVO;
-import com.ReadEnjoyBack.vo.UserOperationVo;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -29,9 +28,5 @@ public interface IBookVersionService {
     ServerResponse<PageInfo> getUserUploadInfo(String username,int pageNum,int pageSize);
     /*得到当前登录用户的下载书籍信息*/
     ServerResponse<PageInfo> getUserDownloadInfo(String username,int pageNum,int pageSize);
-    /*插入用户评论信息*/
-    ServerResponse insertComments(String userEmail,int bookVersion, String bookIsbn, String commentInfo);
-    /*书籍版本举报*/
-    ServerResponse<String> reportBookVersion(String userName,int bookVersionId,String reason);
 
 }

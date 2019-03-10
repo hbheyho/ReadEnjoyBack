@@ -22,5 +22,7 @@ public interface CommentsMapper {
     List<Comments> getCommentInfo(@Param("versionId") int versionId);
    /*得到当前用户的评论信息*/
     List<Comments> getUserAllComments(@Param("email") String email);
+    /*得到评论列表*/
+    List<Comments> selectCommentsList();
 
 }

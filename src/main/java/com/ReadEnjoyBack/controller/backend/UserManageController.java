@@ -5,6 +5,7 @@ import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.pojo.User;
 import com.ReadEnjoyBack.service.IUserService;
+import com.ReadEnjoyBack.util.MD5Util;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,7 +48,8 @@ public class UserManageController {
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
         // 跨域的session 保证同一性
         response.addHeader("Access-Control-Allow-Credentials","true");
-        ServerResponse<User> loginResponse = iUserService.login(email,password);
+        String MD5Password = MD5Util.MD5EncodeUtf8(password);
+        ServerResponse<User> loginResponse = iUserService.login(email,MD5Password);
         if (loginResponse.isSuccess()){
             User user = loginResponse.getData();
             if (user.getRole() == Const.Role.ROLE_ADMIN){

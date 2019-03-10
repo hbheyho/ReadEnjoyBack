@@ -295,4 +295,11 @@
     FROM readenjoy_user
     WHERE username = #{userName}
   </select>
+
+  <!--根据邮箱得用户信息-->
+  <select id="getUserByEmail" resultMap="BaseResultMap" parameterType="string">
+   SELECT *
+   FROM readenjoy_user
+   WHERE email = #{email};
+  </select>
 </mapper>

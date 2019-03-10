@@ -1,6 +1,5 @@
 package com.ReadEnjoyBack.service.Impl;
 
-import com.ReadEnjoyBack.common.Const;
 import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.dao.*;
@@ -199,55 +198,6 @@ public class BookVersionImpl  implements IBookVersionService{
         PageInfo pageInfo = new PageInfo(userDownloadList);
         pageInfo.setList(userOperationVoList);
         return ServerResponse.createBySuccesse(pageInfo);
-    }
-    /*
-     * @Author:HB
-     * @Description: 用户评论信息
-     * @Data:15:43 2018/12/27
-     * @param null
-     returns:
-    */
-    @Override
-    public ServerResponse insertComments(String userEmail, int bookVersion, String bookIsbn, String commentInfo) {
-       try {
-           Comments comments = new Comments();
-           comments.setUserEmail(userEmail);
-           comments.setBookIsbn(bookIsbn);
-           comments.setBookVersion(bookVersion);
-           comments.setCommentInfo(commentInfo);
-           commentsMapper.insertSelective(comments);
-       }catch (Exception e){
-           return ServerResponse.createByErrorMessage("评论失败!");
-       }
-        return ServerResponse.createBySuccessMessage("评论成功!");
-    }
-   /*
-    * @Author:HB
-    * @Description: 书籍版本举报
-    * @Data:16:19 2019/1/27
-    * @param userName,bookVersionId,reason
-    returns:
-   */
-    @Override
-    public ServerResponse<String> reportBookVersion(String userName, int bookVersionId, String reason) {
-        // 得到书籍上传者
-        String uploadName = bookVersionMapper.selectUploadUserNameById(bookVersionId);
-        if (uploadName == null){
-            return ServerResponse.createByErrorMessage("举报失败!请重新再试!");
-        }
-        BookReport bookReport = new BookReport();
-        bookReport.setBookVersionId(bookVersionId);
-        bookReport.setReportName(userName);
-        bookReport.setReportReason(reason);
-        bookReport.setUploadName(uploadName);
-        bookReport.setReportStatus(0);
-        // 进行举报信息插入
-        try {
-            bookReportMapper.insertSelective(bookReport);
-        }catch (Exception e){
-            return ServerResponse.createByErrorMessage("举报失败!请重新再试!");
-        }
-        return ServerResponse.createBySuccessMessage("举报成功!");
     }
 
 

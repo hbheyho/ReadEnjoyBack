@@ -116,4 +116,11 @@
       report_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--得到举报列表-->
+  <select id="selectReportList" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List"/>
+  FROM readenjoy_report
+  </select>
 </mapper>

@@ -4,6 +4,8 @@ import com.ReadEnjoyBack.common.ResponseCode;
 import com.ReadEnjoyBack.common.ServerResponse;
 import com.ReadEnjoyBack.pojo.Comments;
 import com.ReadEnjoyBack.pojo.User;
+import com.ReadEnjoyBack.service.ICommentService;
+import com.ReadEnjoyBack.service.IFeedbackService;
 import com.ReadEnjoyBack.service.IFileService;
 import com.ReadEnjoyBack.service.IUserService;
 import com.ReadEnjoyBack.common.Const;
@@ -38,6 +40,10 @@ public class UserController {
      private IUserService iUserService;
     @Autowired
     private IFileService iFileService;
+    @Autowired
+    private ICommentService ICommentService;
+    @Autowired
+    private IFeedbackService iFeedbackService;
       /*
       * @Author:HB
       * @Description: 用户登录
@@ -350,7 +356,7 @@ public class UserController {
             return ServerResponse.createByErrorMessage("用户未登录，登录之后在进行操作噢！");
         }
         String email = user.getEmail();
-        return iUserService.getUserAllComments(email);
+        return ICommentService.getUserAllComments(email);
     }
         /* * @Author:HB
          * @Description: 删除评论信息
@@ -359,7 +365,7 @@ public class UserController {
          returns:*/
     @RequestMapping(value = "delete_User_Comments.do")
     @ResponseBody
-    public ServerResponse<String> deleteUserComments(@RequestParam(value = "commentId") int commentId, HttpSession session,
+    public ServerResponse<String> deleteUserComments(@RequestParam(value = "commentId",defaultValue = "-1") int commentId, HttpSession session,
                                                      HttpServletRequest  request, HttpServletResponse response){
         // 解决跨域
         response.addHeader("Access-Control-Allow-Origin",request.getHeader("Origin"));
@@ -369,8 +375,7 @@ public class UserController {
         if (user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录，登录之后在进行操作噢！");
         }
-        String email = user.getEmail();
-        return iUserService.deleteUserComments(commentId);
+        return ICommentService.deleteComment(commentId);
     }
     /*
      * @Author:HB
@@ -395,7 +400,7 @@ public class UserController {
         }else {
             userName = user.getUsername();
         }
-        return iUserService.feedbackDo(userName,feedbackInfo,feedbackName);
+        return iFeedbackService.feedbackDo(userName,feedbackInfo,feedbackName);
     }
 
 }

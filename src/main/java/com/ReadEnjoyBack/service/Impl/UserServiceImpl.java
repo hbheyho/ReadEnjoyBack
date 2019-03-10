@@ -358,66 +358,6 @@ public class UserServiceImpl implements IUserService {
         int status = userMapper.getUserStatus(email);
         return ServerResponse.createBySuccesse(status);
     }
-    /*
-     * @Author:HB
-     * @Description: 得到当前用户所有评论
-     * @Data:10:10 2019/1/28
-     * @param email
-     returns:
-    */
-    @Override
-    public ServerResponse<List<Comments>> getUserAllComments(String email) {
-        List<Comments> commentsList = commentsMapper.getUserAllComments(email);
-        if (commentsList.size() == 0){
-            return ServerResponse.createByErrorMessage("当前用户暂无评论");
-        }
-        return ServerResponse.createBySuccesse(commentsList);
-    }
-    /*
-     * @Author:HB
-     * @Description:用户评论信息删除
-     * @Data:14:08 2019/1/28
-     * @param  commentId
-     returns:
-    */
-    @Override
-    public ServerResponse<String> deleteUserComments( int commentId) {
-        int result = commentsMapper.deleteByPrimaryKey(commentId);
-        if (result > 0){
-            return ServerResponse.createBySuccessMessage("删除成功!");
-        }else {
-            return ServerResponse.createByErrorMessage("删除失败!");
-        }
-    }
-    /*
-     * @Author:HB
-     * @Description: 用户反馈信息插入
-     * @Data:21:38 2019/2/26
-     * @param  feedbackInfo feedbackName
-     returns: String
-    */
-    @Override
-    public ServerResponse<String> feedbackDo(String userName, String feedbackInfo, String feedbackName) {
-        if (StringUtils.isBlank(feedbackInfo) && StringUtils.isBlank(feedbackName)){
-            return ServerResponse.createByErrorMessage("请输入相应反馈类型或内容");
-        }
-        Feedback feedback = new Feedback();
-        feedback.setFbInfo(feedbackInfo);
-        feedback.setFbName(feedbackName);
-        feedback.setFbUsrname(userName);
-        if ("网站反馈".equals(feedbackName)){
-            feedback.setFbType(0);
-        }else {
-            feedback.setFbType(1);
-        }
-        int result = feedbackMapper.insertSelective(feedback);
-        if (result > 0){
-            return ServerResponse.createBySuccessMessage("反馈成功!");
-        }
-        return ServerResponse.createByErrorMessage("反馈失败!");
-    }
-
-
     /*------------------------------------- 后台 ---------------------------------------*/
     /*
      * @Author:HB
