@@ -12,4 +12,6 @@ ReadEnjoyBack仓库为公版书共享网站的后端实现,采用的是SSM(Sprin
 #### 使用说明
 - 把项目拉到本地后,使用Maven下载依赖的Jar包
 - 配置好Tomcat和JDK之后便可运行
-- ps: 若想要实现书籍在线浏览, 还需要下载Openoffice软件并窗口启动便可
+- ps: 若想要实现书籍在线浏览, 还需要下载Openoffice软件并窗口启动便可<br>
+
+**悄咪咪推荐个人Blog:** [HB's Blog](http://www.huangbin.fun)
