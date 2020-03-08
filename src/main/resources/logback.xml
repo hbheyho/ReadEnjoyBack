@@ -11,9 +11,9 @@
     </appender>
 
     <appender name="readenjoy" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/JavaStudy/JavaDEV/Tomcat7/apache-tomcat-7.0.78/logs/readenjoy/readenjoy.log</File>
+        <File>/DevelopmentEnvironment/apache-tomcat-8.0.44/logs/readenjoy/readenjoy.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/JavaStudy/JavaDEV/Tomcat7/apache-tomcat-7.0.78/logs/readenjoy/readenjoy.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/DevelopmentEnvironment/apache-tomcat-8.0.44/logs/readenjoy/readenjoy.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -25,9 +25,9 @@
 
 
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/JavaStudy/JavaDEV/Tomcat7/apache-tomcat-7.0.78/logs/readenjoy/error.log</File>
+        <File>/DevelopmentEnvironment/apache-tomcat-8.0.44/logs/readenjoy/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/JavaStudy/JavaDEV/Tomcat7/apache-tomcat-7.0.78/logs/readenjoy/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/DevelopmentEnvironment/apache-tomcat-8.0.44/logs/readenjoy/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
